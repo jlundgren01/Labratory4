@@ -1,0 +1,2814 @@
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 1
+
+
+   1              		.cpu cortex-m0
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 34, 0
+  11              		.eabi_attribute 18, 4
+  12              		.code	16
+  13              		.file	"BLEApplications.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.comm	rgbHandle,12,4
+  18              		.global	sendCapSenseSliderNotifications
+  19              		.bss
+  20              		.type	sendCapSenseSliderNotifications, %object
+  21              		.size	sendCapSenseSliderNotifications, 1
+  22              	sendCapSenseSliderNotifications:
+  23 0000 00       		.space	1
+  24              		.comm	RGBledData,4,4
+  25              		.global	deviceConnected
+  26              		.type	deviceConnected, %object
+  27              		.size	deviceConnected, 1
+  28              	deviceConnected:
+  29 0001 00       		.space	1
+  30              		.global	updateNotificationCCCAttribute
+  31              		.type	updateNotificationCCCAttribute, %object
+  32              		.size	updateNotificationCCCAttribute, 1
+  33              	updateNotificationCCCAttribute:
+  34 0002 00       		.space	1
+  35              		.section	.text.CustomEventHandler,"ax",%progbits
+  36              		.align	2
+  37              		.global	CustomEventHandler
+  38              		.code	16
+  39              		.thumb_func
+  40              		.type	CustomEventHandler, %function
+  41              	CustomEventHandler:
+  42              	.LFB37:
+  43              		.file 1 ".\\BLEApplications.c"
+   1:.\BLEApplications.c **** /*****************************************************************************
+   2:.\BLEApplications.c **** * File Name: BleApplications.c
+   3:.\BLEApplications.c **** *
+   4:.\BLEApplications.c **** * Version: 1.0
+   5:.\BLEApplications.c **** *
+   6:.\BLEApplications.c **** * Description:
+   7:.\BLEApplications.c **** * This file implements the BLE capability in the PSoC 4 BLE Lab 4.
+   8:.\BLEApplications.c **** *
+   9:.\BLEApplications.c **** * Hardware Dependency:
+  10:.\BLEApplications.c **** * CY8CKIT-042 BLE Pioneer Kit
+  11:.\BLEApplications.c **** *
+  12:.\BLEApplications.c **** ******************************************************************************
+  13:.\BLEApplications.c **** * Copyright (2014), Cypress Semiconductor Corporation.
+  14:.\BLEApplications.c **** ******************************************************************************
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 2
+
+
+  15:.\BLEApplications.c **** * This software is owned by Cypress Semiconductor Corporation (Cypress) and is
+  16:.\BLEApplications.c **** * protected by and subject to worldwide patent protection (United States and
+  17:.\BLEApplications.c **** * foreign), United States copyright laws and international treaty provisions.
+  18:.\BLEApplications.c **** * Cypress hereby grants to licensee a personal, non-exclusive, non-transferable
+  19:.\BLEApplications.c **** * license to copy, use, modify, create derivative works of, and compile the
+  20:.\BLEApplications.c **** * Cypress Source Code and derivative works for the sole purpose of creating
+  21:.\BLEApplications.c **** * custom software in support of licensee product to be used only in conjunction
+  22:.\BLEApplications.c **** * with a Cypress integrated circuit as specified in the applicable agreement.
+  23:.\BLEApplications.c **** * Any reproduction, modification, translation, compilation, or representation of
+  24:.\BLEApplications.c **** * this software except as specified above is prohibited without the express
+  25:.\BLEApplications.c **** * written permission of Cypress.
+  26:.\BLEApplications.c **** *
+  27:.\BLEApplications.c **** * Disclaimer: CYPRESS MAKES NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, WITH
+  28:.\BLEApplications.c **** * REGARD TO THIS MATERIAL, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  29:.\BLEApplications.c **** * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+  30:.\BLEApplications.c **** * Cypress reserves the right to make changes without further notice to the
+  31:.\BLEApplications.c **** * materials described herein. Cypress does not assume any liability arising out
+  32:.\BLEApplications.c **** * of the application or use of any product or circuit described herein. Cypress
+  33:.\BLEApplications.c **** * does not authorize its products for use as critical components in life-support
+  34:.\BLEApplications.c **** * systems where a malfunction or failure may reasonably be expected to result in
+  35:.\BLEApplications.c **** * significant injury to the user. The inclusion of Cypress' product in a life-
+  36:.\BLEApplications.c **** * support systems application implies that the manufacturer assumes all risk of
+  37:.\BLEApplications.c **** * such use and in doing so indemnifies Cypress against all charges. Use may be
+  38:.\BLEApplications.c **** * limited by and subject to the applicable Cypress software license agreement.
+  39:.\BLEApplications.c **** *****************************************************************************/
+  40:.\BLEApplications.c **** 
+  41:.\BLEApplications.c **** /*****************************************************************************
+  42:.\BLEApplications.c **** * Included headers
+  43:.\BLEApplications.c **** *****************************************************************************/
+  44:.\BLEApplications.c **** #include <main.h>
+  45:.\BLEApplications.c **** #include <BLEApplications.h>
+  46:.\BLEApplications.c **** 
+  47:.\BLEApplications.c **** 
+  48:.\BLEApplications.c **** /*****************************************************************************
+  49:.\BLEApplications.c **** * Static variables 
+  50:.\BLEApplications.c **** *****************************************************************************/
+  51:.\BLEApplications.c **** 
+  52:.\BLEApplications.c **** /* 'rgbHandle' stores RGB control data parameters */
+  53:.\BLEApplications.c **** CYBLE_GATT_HANDLE_VALUE_PAIR_T		rgbHandle;	
+  54:.\BLEApplications.c **** 
+  55:.\BLEApplications.c **** /*This flag is set when the Central device writes to CCC (Client Characteristic 
+  56:.\BLEApplications.c **** * Configuration) of the CapSense slider Characteristic to enable notifications */
+  57:.\BLEApplications.c **** uint8 sendCapSenseSliderNotifications = FALSE;	
+  58:.\BLEApplications.c **** 
+  59:.\BLEApplications.c **** /* Array to store the present RGB LED control data. The 4 bytes 
+  60:.\BLEApplications.c **** * of the array represents {R, G, B, Intensity} */
+  61:.\BLEApplications.c **** uint8 RGBledData[RGB_CHAR_DATA_LEN];
+  62:.\BLEApplications.c **** 
+  63:.\BLEApplications.c **** /* This flag is used by application to know whether a Central 
+  64:.\BLEApplications.c **** * device has been connected. This is updated in BLE event callback 
+  65:.\BLEApplications.c **** * function*/
+  66:.\BLEApplications.c **** uint8 deviceConnected = FALSE;
+  67:.\BLEApplications.c **** 
+  68:.\BLEApplications.c **** /* This flag is used to let application update the CCCD value for correct read 
+  69:.\BLEApplications.c **** * operation by connected Central device */
+  70:.\BLEApplications.c **** uint8 updateNotificationCCCAttribute = FALSE;
+  71:.\BLEApplications.c **** 
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 3
+
+
+  72:.\BLEApplications.c **** 
+  73:.\BLEApplications.c **** 
+  74:.\BLEApplications.c **** /*******************************************************************************
+  75:.\BLEApplications.c **** * Function Name: CustomEventHandler
+  76:.\BLEApplications.c **** ********************************************************************************
+  77:.\BLEApplications.c **** * Summary:
+  78:.\BLEApplications.c **** * Call back event function to handle various events from BLE stack
+  79:.\BLEApplications.c **** *
+  80:.\BLEApplications.c **** * Parameters:
+  81:.\BLEApplications.c **** *  event:		event returned
+  82:.\BLEApplications.c **** *  eventParam:	link to value of the events returned
+  83:.\BLEApplications.c **** *
+  84:.\BLEApplications.c **** * Return:
+  85:.\BLEApplications.c **** *  void
+  86:.\BLEApplications.c **** *
+  87:.\BLEApplications.c **** *******************************************************************************/
+  88:.\BLEApplications.c **** void CustomEventHandler(uint32 event, void * eventParam)
+  89:.\BLEApplications.c **** {
+  44              		.loc 1 89 0
+  45              		.cfi_startproc
+  46 0000 80B5     		push	{r7, lr}
+  47              		.cfi_def_cfa_offset 8
+  48              		.cfi_offset 7, -8
+  49              		.cfi_offset 14, -4
+  50 0002 84B0     		sub	sp, sp, #16
+  51              		.cfi_def_cfa_offset 24
+  52 0004 00AF     		add	r7, sp, #0
+  53              		.cfi_def_cfa_register 7
+  54 0006 7860     		str	r0, [r7, #4]
+  55 0008 3960     		str	r1, [r7]
+  90:.\BLEApplications.c **** 	CYBLE_GATTS_WRITE_REQ_PARAM_T *wrReqParam;
+  91:.\BLEApplications.c ****    
+  92:.\BLEApplications.c ****     switch(event)
+  56              		.loc 1 92 0
+  57 000a 7B68     		ldr	r3, [r7, #4]
+  58 000c 282B     		cmp	r3, #40
+  59 000e 0CD0     		beq	.L3
+  60 0010 04D8     		bhi	.L4
+  61 0012 012B     		cmp	r3, #1
+  62 0014 09D0     		beq	.L3
+  63 0016 262B     		cmp	r3, #38
+  64 0018 0BD0     		beq	.L5
+  93:.\BLEApplications.c ****     {
+  94:.\BLEApplications.c ****         case CYBLE_EVT_STACK_ON:
+  95:.\BLEApplications.c ****         case CYBLE_EVT_GAP_DEVICE_DISCONNECTED:
+  96:.\BLEApplications.c **** 			/* Start Advertisement and enter Discoverable mode*/
+  97:.\BLEApplications.c **** 			CyBle_GappStartAdvertisement(CYBLE_ADVERTISING_FAST);
+  98:.\BLEApplications.c **** 			break;
+  99:.\BLEApplications.c **** 			
+ 100:.\BLEApplications.c **** 		case CYBLE_EVT_GAPP_ADVERTISEMENT_START_STOP:
+ 101:.\BLEApplications.c **** 			/* Set the BLE state variable to control LED status */
+ 102:.\BLEApplications.c ****             if(CYBLE_STATE_DISCONNECTED == CyBle_GetState())
+ 103:.\BLEApplications.c ****             {
+ 104:.\BLEApplications.c ****                 /* Start Advertisement and enter Discoverable mode*/
+ 105:.\BLEApplications.c ****                 CyBle_GappStartAdvertisement(CYBLE_ADVERTISING_FAST);
+ 106:.\BLEApplications.c ****             }
+ 107:.\BLEApplications.c **** 			break;
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 4
+
+
+ 108:.\BLEApplications.c **** 			
+ 109:.\BLEApplications.c ****         case CYBLE_EVT_GATT_CONNECT_IND:
+ 110:.\BLEApplications.c **** 			/* This flag is used in application to check connection status */
+ 111:.\BLEApplications.c **** 			deviceConnected = TRUE;
+ 112:.\BLEApplications.c **** 			break;
+ 113:.\BLEApplications.c ****         
+ 114:.\BLEApplications.c ****         case CYBLE_EVT_GATT_DISCONNECT_IND:
+ 115:.\BLEApplications.c **** 			/* Update deviceConnected flag*/
+ 116:.\BLEApplications.c **** 			deviceConnected = FALSE;
+ 117:.\BLEApplications.c **** 			
+ 118:.\BLEApplications.c **** 			/* Reset CapSense notification flag to prevent further notifications
+ 119:.\BLEApplications.c **** 			 * being sent to Central device after next connection. */
+ 120:.\BLEApplications.c **** 			sendCapSenseSliderNotifications = FALSE;
+ 121:.\BLEApplications.c **** 			
+ 122:.\BLEApplications.c **** 			/* Reset the CCCD value to disable notifications */
+ 123:.\BLEApplications.c **** 			updateNotificationCCCAttribute = TRUE;
+ 124:.\BLEApplications.c **** 			
+ 125:.\BLEApplications.c **** 			/* Reset the color coordinates */
+ 126:.\BLEApplications.c **** 			RGBledData[RED_INDEX] = ZERO;
+ 127:.\BLEApplications.c ****             RGBledData[GREEN_INDEX] = ZERO;
+ 128:.\BLEApplications.c ****             RGBledData[BLUE_INDEX] = ZERO;
+ 129:.\BLEApplications.c ****             RGBledData[INTENSITY_INDEX] = ZERO;
+ 130:.\BLEApplications.c **** 			UpdateRGBled();
+ 131:.\BLEApplications.c **** 
+ 132:.\BLEApplications.c **** 			break;
+ 133:.\BLEApplications.c ****         
+ 134:.\BLEApplications.c ****             
+ 135:.\BLEApplications.c ****         case CYBLE_EVT_GATTS_WRITE_REQ: 							
+ 136:.\BLEApplications.c ****             /* This event is received when Central device sends a Write command 
+ 137:.\BLEApplications.c ****              * on an Attribute. 
+ 138:.\BLEApplications.c ****              * We first get the attribute handle from the event parameter and 
+ 139:.\BLEApplications.c ****              * then try to match that handle with an attribute in the database.
+ 140:.\BLEApplications.c ****              */
+ 141:.\BLEApplications.c ****             wrReqParam = (CYBLE_GATTS_WRITE_REQ_PARAM_T *) eventParam;
+ 142:.\BLEApplications.c ****             
+ 143:.\BLEApplications.c **** 
+ 144:.\BLEApplications.c ****             /* This condition checks whether the RGB LED characteristic was
+ 145:.\BLEApplications.c ****              * written to by matching the attribute handle.
+ 146:.\BLEApplications.c ****              * If the attribute handle matches, then the value written to the 
+ 147:.\BLEApplications.c ****              * attribute is extracted and used to drive RGB LED.
+ 148:.\BLEApplications.c ****              */
+ 149:.\BLEApplications.c ****             
+ 150:.\BLEApplications.c ****             /* Extract the attribute handle for the RGB LED 
+ 151:.\BLEApplications.c ****              * characteristic from the custom service data structure.
+ 152:.\BLEApplications.c ****              */
+ 153:.\BLEApplications.c ****             if(wrReqParam->handleValPair.attrHandle == cyBle_customs[RGB_LED_SERVICE_INDEX].\
+ 154:.\BLEApplications.c **** 								customServiceInfo[RGB_LED_CHAR_INDEX].customServiceCharHandle)
+ 155:.\BLEApplications.c ****             {
+ 156:.\BLEApplications.c ****                 /* Extract the value of the attribute from the handle-value pair 
+ 157:.\BLEApplications.c ****                  * database. */
+ 158:.\BLEApplications.c ****                 RGBledData[RED_INDEX] = wrReqParam->handleValPair.value.val[RED_INDEX];
+ 159:.\BLEApplications.c ****                 RGBledData[GREEN_INDEX] = wrReqParam->handleValPair.value.val[GREEN_INDEX];
+ 160:.\BLEApplications.c ****                 RGBledData[BLUE_INDEX] = wrReqParam->handleValPair.value.val[BLUE_INDEX];
+ 161:.\BLEApplications.c ****                 RGBledData[INTENSITY_INDEX] = wrReqParam->handleValPair.value.val[INTENSITY_INDEX];
+ 162:.\BLEApplications.c ****                 
+ 163:.\BLEApplications.c ****                 /* Update the PrISM components and the attribute for RGB LED read 
+ 164:.\BLEApplications.c ****                  * characteristics */
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 5
+
+
+ 165:.\BLEApplications.c ****                 UpdateRGBled();
+ 166:.\BLEApplications.c ****             }
+ 167:.\BLEApplications.c **** 
+ 168:.\BLEApplications.c ****             
+ 169:.\BLEApplications.c ****             /* This condition checks whether the CCCD descriptor for CapSense
+ 170:.\BLEApplications.c ****              * slider characteristic has been written to. This tells us whether
+ 171:.\BLEApplications.c ****              * the notifications for CapSense slider have been enabled/disabled.
+ 172:.\BLEApplications.c ****              */
+ 173:.\BLEApplications.c ****             if(wrReqParam->handleValPair.attrHandle == cyBle_customs[CAPSENSE_SERVICE_INDEX].\
+ 174:.\BLEApplications.c **** 				customServiceInfo[CAPSENSE_SLIDER_CHAR_INDEX].customServiceCharDescriptors[CAPSENSE_SLIDER_CCC_
+ 175:.\BLEApplications.c ****             {
+ 176:.\BLEApplications.c ****                 sendCapSenseSliderNotifications = wrReqParam->handleValPair.value.val[CCC_DATA_INDE
+ 177:.\BLEApplications.c **** 				
+ 178:.\BLEApplications.c **** 				/* Set flag to allow CCCD to be updated for next read operation */
+ 179:.\BLEApplications.c **** 				updateNotificationCCCAttribute = TRUE;
+ 180:.\BLEApplications.c ****             }
+ 181:.\BLEApplications.c **** 
+ 182:.\BLEApplications.c **** 			
+ 183:.\BLEApplications.c **** 			/* Send the response to the write request received. */
+ 184:.\BLEApplications.c **** 			CyBle_GattsWriteRsp(cyBle_connHandle);
+ 185:.\BLEApplications.c **** 			
+ 186:.\BLEApplications.c **** 			break;
+ 187:.\BLEApplications.c **** 
+ 188:.\BLEApplications.c ****         default:
+ 189:.\BLEApplications.c **** 
+ 190:.\BLEApplications.c ****        	 	break;
+  65              		.loc 1 190 0
+  66 001a 6AE0     		b	.L1
+  67              	.L4:
+  92:.\BLEApplications.c ****     {
+  68              		.loc 1 92 0
+  69 001c 422B     		cmp	r3, #66
+  70 001e 15D0     		beq	.L6
+  71 0020 4C2B     		cmp	r3, #76
+  72 0022 2BD0     		beq	.L7
+  73 0024 412B     		cmp	r3, #65
+  74 0026 0DD0     		beq	.L8
+  75              		.loc 1 190 0
+  76 0028 63E0     		b	.L1
+  77              	.L3:
+  97:.\BLEApplications.c **** 			break;
+  78              		.loc 1 97 0
+  79 002a 0020     		mov	r0, #0
+  80 002c FFF7FEFF 		bl	CyBle_GappStartAdvertisement
+  98:.\BLEApplications.c **** 			
+  81              		.loc 1 98 0
+  82 0030 5FE0     		b	.L1
+  83              	.L5:
+ 102:.\BLEApplications.c ****             {
+  84              		.loc 1 102 0
+  85 0032 314B     		ldr	r3, .L13
+  86 0034 1B78     		ldrb	r3, [r3]
+  87 0036 042B     		cmp	r3, #4
+  88 0038 03D1     		bne	.L10
+ 105:.\BLEApplications.c ****             }
+  89              		.loc 1 105 0
+  90 003a 0020     		mov	r0, #0
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 6
+
+
+  91 003c FFF7FEFF 		bl	CyBle_GappStartAdvertisement
+ 107:.\BLEApplications.c **** 			
+  92              		.loc 1 107 0
+  93 0040 57E0     		b	.L1
+  94              	.L10:
+  95 0042 56E0     		b	.L1
+  96              	.L8:
+ 111:.\BLEApplications.c **** 			break;
+  97              		.loc 1 111 0
+  98 0044 2D4B     		ldr	r3, .L13+4
+  99 0046 0122     		mov	r2, #1
+ 100 0048 1A70     		strb	r2, [r3]
+ 112:.\BLEApplications.c ****         
+ 101              		.loc 1 112 0
+ 102 004a 52E0     		b	.L1
+ 103              	.L6:
+ 116:.\BLEApplications.c **** 			
+ 104              		.loc 1 116 0
+ 105 004c 2B4B     		ldr	r3, .L13+4
+ 106 004e 0022     		mov	r2, #0
+ 107 0050 1A70     		strb	r2, [r3]
+ 120:.\BLEApplications.c **** 			
+ 108              		.loc 1 120 0
+ 109 0052 2B4B     		ldr	r3, .L13+8
+ 110 0054 0022     		mov	r2, #0
+ 111 0056 1A70     		strb	r2, [r3]
+ 123:.\BLEApplications.c **** 			
+ 112              		.loc 1 123 0
+ 113 0058 2A4B     		ldr	r3, .L13+12
+ 114 005a 0122     		mov	r2, #1
+ 115 005c 1A70     		strb	r2, [r3]
+ 126:.\BLEApplications.c ****             RGBledData[GREEN_INDEX] = ZERO;
+ 116              		.loc 1 126 0
+ 117 005e 2A4B     		ldr	r3, .L13+16
+ 118 0060 0022     		mov	r2, #0
+ 119 0062 1A70     		strb	r2, [r3]
+ 127:.\BLEApplications.c ****             RGBledData[BLUE_INDEX] = ZERO;
+ 120              		.loc 1 127 0
+ 121 0064 284B     		ldr	r3, .L13+16
+ 122 0066 0022     		mov	r2, #0
+ 123 0068 5A70     		strb	r2, [r3, #1]
+ 128:.\BLEApplications.c ****             RGBledData[INTENSITY_INDEX] = ZERO;
+ 124              		.loc 1 128 0
+ 125 006a 274B     		ldr	r3, .L13+16
+ 126 006c 0022     		mov	r2, #0
+ 127 006e 9A70     		strb	r2, [r3, #2]
+ 129:.\BLEApplications.c **** 			UpdateRGBled();
+ 128              		.loc 1 129 0
+ 129 0070 254B     		ldr	r3, .L13+16
+ 130 0072 0022     		mov	r2, #0
+ 131 0074 DA70     		strb	r2, [r3, #3]
+ 130:.\BLEApplications.c **** 
+ 132              		.loc 1 130 0
+ 133 0076 FFF7FEFF 		bl	UpdateRGBled
+ 132:.\BLEApplications.c ****         
+ 134              		.loc 1 132 0
+ 135 007a 3AE0     		b	.L1
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 7
+
+
+ 136              	.L7:
+ 141:.\BLEApplications.c ****             
+ 137              		.loc 1 141 0
+ 138 007c 3B68     		ldr	r3, [r7]
+ 139 007e FB60     		str	r3, [r7, #12]
+ 153:.\BLEApplications.c **** 								customServiceInfo[RGB_LED_CHAR_INDEX].customServiceCharHandle)
+ 140              		.loc 1 153 0
+ 141 0080 FB68     		ldr	r3, [r7, #12]
+ 142 0082 9A89     		ldrh	r2, [r3, #12]
+ 154:.\BLEApplications.c ****             {
+ 143              		.loc 1 154 0
+ 144 0084 214B     		ldr	r3, .L13+20
+ 145 0086 5B89     		ldrh	r3, [r3, #10]
+ 153:.\BLEApplications.c **** 								customServiceInfo[RGB_LED_CHAR_INDEX].customServiceCharHandle)
+ 146              		.loc 1 153 0
+ 147 0088 9A42     		cmp	r2, r3
+ 148 008a 15D1     		bne	.L11
+ 158:.\BLEApplications.c ****                 RGBledData[GREEN_INDEX] = wrReqParam->handleValPair.value.val[GREEN_INDEX];
+ 149              		.loc 1 158 0
+ 150 008c FB68     		ldr	r3, [r7, #12]
+ 151 008e 5B68     		ldr	r3, [r3, #4]
+ 152 0090 1A78     		ldrb	r2, [r3]
+ 153 0092 1D4B     		ldr	r3, .L13+16
+ 154 0094 1A70     		strb	r2, [r3]
+ 159:.\BLEApplications.c ****                 RGBledData[BLUE_INDEX] = wrReqParam->handleValPair.value.val[BLUE_INDEX];
+ 155              		.loc 1 159 0
+ 156 0096 FB68     		ldr	r3, [r7, #12]
+ 157 0098 5B68     		ldr	r3, [r3, #4]
+ 158 009a 5A78     		ldrb	r2, [r3, #1]
+ 159 009c 1A4B     		ldr	r3, .L13+16
+ 160 009e 5A70     		strb	r2, [r3, #1]
+ 160:.\BLEApplications.c ****                 RGBledData[INTENSITY_INDEX] = wrReqParam->handleValPair.value.val[INTENSITY_INDEX];
+ 161              		.loc 1 160 0
+ 162 00a0 FB68     		ldr	r3, [r7, #12]
+ 163 00a2 5B68     		ldr	r3, [r3, #4]
+ 164 00a4 9A78     		ldrb	r2, [r3, #2]
+ 165 00a6 184B     		ldr	r3, .L13+16
+ 166 00a8 9A70     		strb	r2, [r3, #2]
+ 161:.\BLEApplications.c ****                 
+ 167              		.loc 1 161 0
+ 168 00aa FB68     		ldr	r3, [r7, #12]
+ 169 00ac 5B68     		ldr	r3, [r3, #4]
+ 170 00ae DA78     		ldrb	r2, [r3, #3]
+ 171 00b0 154B     		ldr	r3, .L13+16
+ 172 00b2 DA70     		strb	r2, [r3, #3]
+ 165:.\BLEApplications.c ****             }
+ 173              		.loc 1 165 0
+ 174 00b4 FFF7FEFF 		bl	UpdateRGBled
+ 175              	.L11:
+ 173:.\BLEApplications.c **** 				customServiceInfo[CAPSENSE_SLIDER_CHAR_INDEX].customServiceCharDescriptors[CAPSENSE_SLIDER_CCC_
+ 176              		.loc 1 173 0
+ 177 00b8 FB68     		ldr	r3, [r7, #12]
+ 178 00ba 9A89     		ldrh	r2, [r3, #12]
+ 174:.\BLEApplications.c ****             {
+ 179              		.loc 1 174 0
+ 180 00bc 134B     		ldr	r3, .L13+20
+ 181 00be 9B88     		ldrh	r3, [r3, #4]
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 8
+
+
+ 173:.\BLEApplications.c **** 				customServiceInfo[CAPSENSE_SLIDER_CHAR_INDEX].customServiceCharDescriptors[CAPSENSE_SLIDER_CCC_
+ 182              		.loc 1 173 0
+ 183 00c0 9A42     		cmp	r2, r3
+ 184 00c2 07D1     		bne	.L12
+ 176:.\BLEApplications.c **** 				
+ 185              		.loc 1 176 0
+ 186 00c4 FB68     		ldr	r3, [r7, #12]
+ 187 00c6 5B68     		ldr	r3, [r3, #4]
+ 188 00c8 1A78     		ldrb	r2, [r3]
+ 189 00ca 0D4B     		ldr	r3, .L13+8
+ 190 00cc 1A70     		strb	r2, [r3]
+ 179:.\BLEApplications.c ****             }
+ 191              		.loc 1 179 0
+ 192 00ce 0D4B     		ldr	r3, .L13+12
+ 193 00d0 0122     		mov	r2, #1
+ 194 00d2 1A70     		strb	r2, [r3]
+ 195              	.L12:
+ 184:.\BLEApplications.c **** 			
+ 196              		.loc 1 184 0
+ 197 00d4 0E4B     		ldr	r3, .L13+24
+ 198 00d6 1A78     		ldrb	r2, [r3]
+ 199 00d8 5B78     		ldrb	r3, [r3, #1]
+ 200 00da 1B02     		lsl	r3, r3, #8
+ 201 00dc 1A43     		orr	r2, r3
+ 202 00de 0023     		mov	r3, #0
+ 203 00e0 1204     		lsl	r2, r2, #16
+ 204 00e2 120C     		lsr	r2, r2, #16
+ 205 00e4 1B0C     		lsr	r3, r3, #16
+ 206 00e6 1B04     		lsl	r3, r3, #16
+ 207 00e8 1343     		orr	r3, r2
+ 208 00ea 181C     		mov	r0, r3
+ 209 00ec FFF7FEFF 		bl	CyBle_GattsWriteRsp
+ 186:.\BLEApplications.c **** 
+ 210              		.loc 1 186 0
+ 211 00f0 C046     		mov	r8, r8
+ 212              	.L1:
+ 191:.\BLEApplications.c ****     }
+ 192:.\BLEApplications.c **** }
+ 213              		.loc 1 192 0
+ 214 00f2 BD46     		mov	sp, r7
+ 215 00f4 04B0     		add	sp, sp, #16
+ 216              		@ sp needed
+ 217 00f6 80BD     		pop	{r7, pc}
+ 218              	.L14:
+ 219              		.align	2
+ 220              	.L13:
+ 221 00f8 00000000 		.word	cyBle_state
+ 222 00fc 00000000 		.word	deviceConnected
+ 223 0100 00000000 		.word	sendCapSenseSliderNotifications
+ 224 0104 00000000 		.word	updateNotificationCCCAttribute
+ 225 0108 00000000 		.word	RGBledData
+ 226 010c 00000000 		.word	cyBle_customs
+ 227 0110 00000000 		.word	cyBle_connHandle
+ 228              		.cfi_endproc
+ 229              	.LFE37:
+ 230              		.size	CustomEventHandler, .-CustomEventHandler
+ 231              		.section	.text.SendCapSenseNotification,"ax",%progbits
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 9
+
+
+ 232              		.align	2
+ 233              		.global	SendCapSenseNotification
+ 234              		.code	16
+ 235              		.thumb_func
+ 236              		.type	SendCapSenseNotification, %function
+ 237              	SendCapSenseNotification:
+ 238              	.LFB38:
+ 193:.\BLEApplications.c **** 
+ 194:.\BLEApplications.c **** 
+ 195:.\BLEApplications.c **** /*******************************************************************************
+ 196:.\BLEApplications.c **** * Function Name: SendCapSenseNotification
+ 197:.\BLEApplications.c **** ********************************************************************************
+ 198:.\BLEApplications.c **** * Summary:
+ 199:.\BLEApplications.c **** * Send CapSense Slider data as BLE Notifications. This function updates
+ 200:.\BLEApplications.c **** * the notification handle with data and triggers the BLE component to send 
+ 201:.\BLEApplications.c **** * notification
+ 202:.\BLEApplications.c **** *
+ 203:.\BLEApplications.c **** * Parameters:
+ 204:.\BLEApplications.c **** *  CapSenseSliderData:	CapSense slider value	
+ 205:.\BLEApplications.c **** *
+ 206:.\BLEApplications.c **** * Return:
+ 207:.\BLEApplications.c **** *  void
+ 208:.\BLEApplications.c **** *
+ 209:.\BLEApplications.c **** *******************************************************************************/
+ 210:.\BLEApplications.c **** void SendCapSenseNotification(uint8 CapSenseSliderData)
+ 211:.\BLEApplications.c **** {
+ 239              		.loc 1 211 0
+ 240              		.cfi_startproc
+ 241 0000 80B5     		push	{r7, lr}
+ 242              		.cfi_def_cfa_offset 8
+ 243              		.cfi_offset 7, -8
+ 244              		.cfi_offset 14, -4
+ 245 0002 86B0     		sub	sp, sp, #24
+ 246              		.cfi_def_cfa_offset 32
+ 247 0004 00AF     		add	r7, sp, #0
+ 248              		.cfi_def_cfa_register 7
+ 249 0006 021C     		mov	r2, r0
+ 250 0008 FB1D     		add	r3, r7, #7
+ 251 000a 1A70     		strb	r2, [r3]
+ 212:.\BLEApplications.c **** 	/* 'CapSensenotificationHandle' stores CapSense notification data parameters */
+ 213:.\BLEApplications.c **** 	CYBLE_GATTS_HANDLE_VALUE_NTF_T		CapSensenotificationHandle;	
+ 214:.\BLEApplications.c **** 	
+ 215:.\BLEApplications.c **** 	/* Update notification handle with CapSense slider data*/
+ 216:.\BLEApplications.c **** 	CapSensenotificationHandle.attrHandle = CAPSENSE_SLIDER_CHAR_HANDLE;				
+ 252              		.loc 1 216 0
+ 253 000c 0C23     		mov	r3, #12
+ 254 000e FB18     		add	r3, r7, r3
+ 255 0010 0E22     		mov	r2, #14
+ 256 0012 1A81     		strh	r2, [r3, #8]
+ 217:.\BLEApplications.c **** 	CapSensenotificationHandle.value.val = &CapSenseSliderData;
+ 257              		.loc 1 217 0
+ 258 0014 0C23     		mov	r3, #12
+ 259 0016 FB18     		add	r3, r7, r3
+ 260 0018 FA1D     		add	r2, r7, #7
+ 261 001a 1A60     		str	r2, [r3]
+ 218:.\BLEApplications.c **** 	CapSensenotificationHandle.value.len = CAPSENSE_CHAR_DATA_LEN;
+ 262              		.loc 1 218 0
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 10
+
+
+ 263 001c 0C23     		mov	r3, #12
+ 264 001e FB18     		add	r3, r7, r3
+ 265 0020 0122     		mov	r2, #1
+ 266 0022 9A80     		strh	r2, [r3, #4]
+ 219:.\BLEApplications.c **** 	
+ 220:.\BLEApplications.c **** 	/* Send notifications. */
+ 221:.\BLEApplications.c **** 	CyBle_GattsNotification(cyBle_connHandle, &CapSensenotificationHandle);
+ 267              		.loc 1 221 0
+ 268 0024 094B     		ldr	r3, .L16
+ 269 0026 0C22     		mov	r2, #12
+ 270 0028 B918     		add	r1, r7, r2
+ 271 002a 1A78     		ldrb	r2, [r3]
+ 272 002c 5B78     		ldrb	r3, [r3, #1]
+ 273 002e 1B02     		lsl	r3, r3, #8
+ 274 0030 1A43     		orr	r2, r3
+ 275 0032 0023     		mov	r3, #0
+ 276 0034 1204     		lsl	r2, r2, #16
+ 277 0036 120C     		lsr	r2, r2, #16
+ 278 0038 1B0C     		lsr	r3, r3, #16
+ 279 003a 1B04     		lsl	r3, r3, #16
+ 280 003c 1343     		orr	r3, r2
+ 281 003e 181C     		mov	r0, r3
+ 282 0040 FFF7FEFF 		bl	CyBle_GattsNotification
+ 222:.\BLEApplications.c **** }
+ 283              		.loc 1 222 0
+ 284 0044 BD46     		mov	sp, r7
+ 285 0046 06B0     		add	sp, sp, #24
+ 286              		@ sp needed
+ 287 0048 80BD     		pop	{r7, pc}
+ 288              	.L17:
+ 289 004a C046     		.align	2
+ 290              	.L16:
+ 291 004c 00000000 		.word	cyBle_connHandle
+ 292              		.cfi_endproc
+ 293              	.LFE38:
+ 294              		.size	SendCapSenseNotification, .-SendCapSenseNotification
+ 295              		.global	__aeabi_idiv
+ 296              		.section	.text.UpdateRGBled,"ax",%progbits
+ 297              		.align	2
+ 298              		.global	UpdateRGBled
+ 299              		.code	16
+ 300              		.thumb_func
+ 301              		.type	UpdateRGBled, %function
+ 302              	UpdateRGBled:
+ 303              	.LFB39:
+ 223:.\BLEApplications.c **** 
+ 224:.\BLEApplications.c **** 
+ 225:.\BLEApplications.c **** /*******************************************************************************
+ 226:.\BLEApplications.c **** * Function Name: UpdateRGBled
+ 227:.\BLEApplications.c **** ********************************************************************************
+ 228:.\BLEApplications.c **** * Summary:
+ 229:.\BLEApplications.c **** * Receive the new RGB data and modify PrISM parameters. Also, update the
+ 230:.\BLEApplications.c **** * read characteristic handle so that the next read from the BLE central device
+ 231:.\BLEApplications.c **** * gives present RGB color and intensity data.
+ 232:.\BLEApplications.c **** *
+ 233:.\BLEApplications.c **** * Parameters:
+ 234:.\BLEApplications.c **** *  void
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 11
+
+
+ 235:.\BLEApplications.c **** *
+ 236:.\BLEApplications.c **** * Return:
+ 237:.\BLEApplications.c **** *  void
+ 238:.\BLEApplications.c **** *
+ 239:.\BLEApplications.c **** *******************************************************************************/
+ 240:.\BLEApplications.c **** void UpdateRGBled(void)
+ 241:.\BLEApplications.c **** {
+ 304              		.loc 1 241 0
+ 305              		.cfi_startproc
+ 306 0000 80B5     		push	{r7, lr}
+ 307              		.cfi_def_cfa_offset 8
+ 308              		.cfi_offset 7, -8
+ 309              		.cfi_offset 14, -4
+ 310 0002 82B0     		sub	sp, sp, #8
+ 311              		.cfi_def_cfa_offset 16
+ 312 0004 00AF     		add	r7, sp, #0
+ 313              		.cfi_def_cfa_register 7
+ 242:.\BLEApplications.c **** 	/* Local variables to calculate the color components from RGB received data*/
+ 243:.\BLEApplications.c **** 	uint8 debug_red;
+ 244:.\BLEApplications.c **** 	uint8 debug_green;
+ 245:.\BLEApplications.c **** 	uint8 debug_blue;
+ 246:.\BLEApplications.c **** 	uint8 intensity_divide_value = RGBledData[INTENSITY_INDEX];
+ 314              		.loc 1 246 0
+ 315 0006 FB1D     		add	r3, r7, #7
+ 316 0008 2C4A     		ldr	r2, .L19
+ 317 000a D278     		ldrb	r2, [r2, #3]
+ 318 000c 1A70     		strb	r2, [r3]
+ 247:.\BLEApplications.c **** 	
+ 248:.\BLEApplications.c **** 	debug_red = (uint8)(((uint16)RGBledData[RED_INDEX] * intensity_divide_value) / 255);
+ 319              		.loc 1 248 0
+ 320 000e 2B4B     		ldr	r3, .L19
+ 321 0010 1B78     		ldrb	r3, [r3]
+ 322 0012 1A1C     		mov	r2, r3
+ 323 0014 FB1D     		add	r3, r7, #7
+ 324 0016 1B78     		ldrb	r3, [r3]
+ 325 0018 5343     		mul	r3, r2
+ 326 001a 181C     		mov	r0, r3
+ 327 001c FF21     		mov	r1, #255
+ 328 001e FFF7FEFF 		bl	__aeabi_idiv
+ 329 0022 031C     		mov	r3, r0
+ 330 0024 1A1C     		mov	r2, r3
+ 331 0026 BB1D     		add	r3, r7, #6
+ 332 0028 1A70     		strb	r2, [r3]
+ 249:.\BLEApplications.c **** 	debug_green = (uint8)(((uint16)RGBledData[GREEN_INDEX] * intensity_divide_value) / 255);
+ 333              		.loc 1 249 0
+ 334 002a 244B     		ldr	r3, .L19
+ 335 002c 5B78     		ldrb	r3, [r3, #1]
+ 336 002e 1A1C     		mov	r2, r3
+ 337 0030 FB1D     		add	r3, r7, #7
+ 338 0032 1B78     		ldrb	r3, [r3]
+ 339 0034 5343     		mul	r3, r2
+ 340 0036 181C     		mov	r0, r3
+ 341 0038 FF21     		mov	r1, #255
+ 342 003a FFF7FEFF 		bl	__aeabi_idiv
+ 343 003e 031C     		mov	r3, r0
+ 344 0040 1A1C     		mov	r2, r3
+ 345 0042 7B1D     		add	r3, r7, #5
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 12
+
+
+ 346 0044 1A70     		strb	r2, [r3]
+ 250:.\BLEApplications.c **** 	debug_blue = (uint8)(((uint16)RGBledData[BLUE_INDEX] * intensity_divide_value) / 255);
+ 347              		.loc 1 250 0
+ 348 0046 1D4B     		ldr	r3, .L19
+ 349 0048 9B78     		ldrb	r3, [r3, #2]
+ 350 004a 1A1C     		mov	r2, r3
+ 351 004c FB1D     		add	r3, r7, #7
+ 352 004e 1B78     		ldrb	r3, [r3]
+ 353 0050 5343     		mul	r3, r2
+ 354 0052 181C     		mov	r0, r3
+ 355 0054 FF21     		mov	r1, #255
+ 356 0056 FFF7FEFF 		bl	__aeabi_idiv
+ 357 005a 031C     		mov	r3, r0
+ 358 005c 1A1C     		mov	r2, r3
+ 359 005e 3B1D     		add	r3, r7, #4
+ 360 0060 1A70     		strb	r2, [r3]
+ 251:.\BLEApplications.c **** 	
+ 252:.\BLEApplications.c **** 	/* Update the density value of the PrISM module for color control*/
+ 253:.\BLEApplications.c **** 	PRS_1_WritePulse0(RGB_LED_MAX_VAL - debug_red);
+ 361              		.loc 1 253 0
+ 362 0062 BB1D     		add	r3, r7, #6
+ 363 0064 1B78     		ldrb	r3, [r3]
+ 364 0066 DB43     		mvn	r3, r3
+ 365 0068 DBB2     		uxtb	r3, r3
+ 366 006a 181C     		mov	r0, r3
+ 367 006c FFF7FEFF 		bl	PRS_1_WritePulse0
+ 254:.\BLEApplications.c ****     PRS_1_WritePulse1(RGB_LED_MAX_VAL - debug_green);
+ 368              		.loc 1 254 0
+ 369 0070 7B1D     		add	r3, r7, #5
+ 370 0072 1B78     		ldrb	r3, [r3]
+ 371 0074 DB43     		mvn	r3, r3
+ 372 0076 DBB2     		uxtb	r3, r3
+ 373 0078 181C     		mov	r0, r3
+ 374 007a FFF7FEFF 		bl	PRS_1_WritePulse1
+ 255:.\BLEApplications.c ****     PRS_2_WritePulse0(RGB_LED_MAX_VAL - debug_blue);
+ 375              		.loc 1 255 0
+ 376 007e 3B1D     		add	r3, r7, #4
+ 377 0080 1B78     		ldrb	r3, [r3]
+ 378 0082 DB43     		mvn	r3, r3
+ 379 0084 DBB2     		uxtb	r3, r3
+ 380 0086 181C     		mov	r0, r3
+ 381 0088 FFF7FEFF 		bl	PRS_2_WritePulse0
+ 256:.\BLEApplications.c **** 	
+ 257:.\BLEApplications.c **** 	/* Update RGB control handle with new values */
+ 258:.\BLEApplications.c **** 	rgbHandle.attrHandle = RGB_LED_CHAR_HANDLE;
+ 382              		.loc 1 258 0
+ 383 008c 0C4B     		ldr	r3, .L19+4
+ 384 008e 1322     		mov	r2, #19
+ 385 0090 1A81     		strh	r2, [r3, #8]
+ 259:.\BLEApplications.c **** 	rgbHandle.value.val = RGBledData;
+ 386              		.loc 1 259 0
+ 387 0092 0B4B     		ldr	r3, .L19+4
+ 388 0094 094A     		ldr	r2, .L19
+ 389 0096 1A60     		str	r2, [r3]
+ 260:.\BLEApplications.c **** 	rgbHandle.value.len = RGB_CHAR_DATA_LEN;
+ 390              		.loc 1 260 0
+ 391 0098 094B     		ldr	r3, .L19+4
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 13
+
+
+ 392 009a 0422     		mov	r2, #4
+ 393 009c 9A80     		strh	r2, [r3, #4]
+ 261:.\BLEApplications.c **** 	rgbHandle.value.actualLen = RGB_CHAR_DATA_LEN;
+ 394              		.loc 1 261 0
+ 395 009e 084B     		ldr	r3, .L19+4
+ 396 00a0 0422     		mov	r2, #4
+ 397 00a2 DA80     		strh	r2, [r3, #6]
+ 262:.\BLEApplications.c **** 	
+ 263:.\BLEApplications.c **** 	/* Send updated RGB control handle as attribute for read by central device */
+ 264:.\BLEApplications.c **** 	CyBle_GattsWriteAttributeValue(&rgbHandle, FALSE, &cyBle_connHandle, FALSE);  
+ 398              		.loc 1 264 0
+ 399 00a4 064A     		ldr	r2, .L19+4
+ 400 00a6 074B     		ldr	r3, .L19+8
+ 401 00a8 101C     		mov	r0, r2
+ 402 00aa 0021     		mov	r1, #0
+ 403 00ac 1A1C     		mov	r2, r3
+ 404 00ae 0023     		mov	r3, #0
+ 405 00b0 FFF7FEFF 		bl	CyBle_GattsWriteAttributeValue
+ 265:.\BLEApplications.c **** }
+ 406              		.loc 1 265 0
+ 407 00b4 BD46     		mov	sp, r7
+ 408 00b6 02B0     		add	sp, sp, #8
+ 409              		@ sp needed
+ 410 00b8 80BD     		pop	{r7, pc}
+ 411              	.L20:
+ 412 00ba C046     		.align	2
+ 413              	.L19:
+ 414 00bc 00000000 		.word	RGBledData
+ 415 00c0 00000000 		.word	rgbHandle
+ 416 00c4 00000000 		.word	cyBle_connHandle
+ 417              		.cfi_endproc
+ 418              	.LFE39:
+ 419              		.size	UpdateRGBled, .-UpdateRGBled
+ 420              		.section	.text.UpdateNotificationCCCD,"ax",%progbits
+ 421              		.align	2
+ 422              		.global	UpdateNotificationCCCD
+ 423              		.code	16
+ 424              		.thumb_func
+ 425              		.type	UpdateNotificationCCCD, %function
+ 426              	UpdateNotificationCCCD:
+ 427              	.LFB40:
+ 266:.\BLEApplications.c **** 
+ 267:.\BLEApplications.c **** 
+ 268:.\BLEApplications.c **** /*******************************************************************************
+ 269:.\BLEApplications.c **** * Function Name: UpdateNotificationCCCD
+ 270:.\BLEApplications.c **** ********************************************************************************
+ 271:.\BLEApplications.c **** * Summary:
+ 272:.\BLEApplications.c **** * Update the data handle for notification status and report it to BLE 
+ 273:.\BLEApplications.c **** * component so that it can be read by Central device.
+ 274:.\BLEApplications.c **** *
+ 275:.\BLEApplications.c **** * Parameters:
+ 276:.\BLEApplications.c **** *  void
+ 277:.\BLEApplications.c **** *
+ 278:.\BLEApplications.c **** * Return:
+ 279:.\BLEApplications.c **** *  void
+ 280:.\BLEApplications.c **** *
+ 281:.\BLEApplications.c **** *******************************************************************************/
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 14
+
+
+ 282:.\BLEApplications.c **** void UpdateNotificationCCCD(void)
+ 283:.\BLEApplications.c **** {
+ 428              		.loc 1 283 0
+ 429              		.cfi_startproc
+ 430 0000 80B5     		push	{r7, lr}
+ 431              		.cfi_def_cfa_offset 8
+ 432              		.cfi_offset 7, -8
+ 433              		.cfi_offset 14, -4
+ 434 0002 84B0     		sub	sp, sp, #16
+ 435              		.cfi_def_cfa_offset 24
+ 436 0004 00AF     		add	r7, sp, #0
+ 437              		.cfi_def_cfa_register 7
+ 284:.\BLEApplications.c **** 	/* Local variable to store the current CCCD value */
+ 285:.\BLEApplications.c **** 	uint8 CapSenseCCCDvalue[2];
+ 286:.\BLEApplications.c **** 	
+ 287:.\BLEApplications.c **** 	/* Handle value to update the CCCD */
+ 288:.\BLEApplications.c **** 	CYBLE_GATT_HANDLE_VALUE_PAIR_T CapSenseNotificationCCCDhandle;
+ 289:.\BLEApplications.c **** 	
+ 290:.\BLEApplications.c **** 	/* Update notification attribute only when there has been change */
+ 291:.\BLEApplications.c **** 	if(updateNotificationCCCAttribute)
+ 438              		.loc 1 291 0
+ 439 0006 134B     		ldr	r3, .L23
+ 440 0008 1B78     		ldrb	r3, [r3]
+ 441 000a 002B     		cmp	r3, #0
+ 442 000c 1FD0     		beq	.L21
+ 292:.\BLEApplications.c **** 	{
+ 293:.\BLEApplications.c **** 		updateNotificationCCCAttribute = FALSE;
+ 443              		.loc 1 293 0
+ 444 000e 114B     		ldr	r3, .L23
+ 445 0010 0022     		mov	r2, #0
+ 446 0012 1A70     		strb	r2, [r3]
+ 294:.\BLEApplications.c **** 	
+ 295:.\BLEApplications.c **** 		/* Write the present CapSense notification status to the local variable */
+ 296:.\BLEApplications.c **** 		CapSenseCCCDvalue[0] = sendCapSenseSliderNotifications;
+ 447              		.loc 1 296 0
+ 448 0014 104B     		ldr	r3, .L23+4
+ 449 0016 1A78     		ldrb	r2, [r3]
+ 450 0018 0C23     		mov	r3, #12
+ 451 001a FB18     		add	r3, r7, r3
+ 452 001c 1A70     		strb	r2, [r3]
+ 297:.\BLEApplications.c **** 		CapSenseCCCDvalue[1] = 0x00;
+ 453              		.loc 1 297 0
+ 454 001e 0C23     		mov	r3, #12
+ 455 0020 FB18     		add	r3, r7, r3
+ 456 0022 0022     		mov	r2, #0
+ 457 0024 5A70     		strb	r2, [r3, #1]
+ 298:.\BLEApplications.c **** 		
+ 299:.\BLEApplications.c **** 		/* Update CCCD handle with notification status data*/
+ 300:.\BLEApplications.c **** 		CapSenseNotificationCCCDhandle.attrHandle = CAPSENSE_CCC_HANDLE;
+ 458              		.loc 1 300 0
+ 459 0026 3B1C     		mov	r3, r7
+ 460 0028 0F22     		mov	r2, #15
+ 461 002a 1A81     		strh	r2, [r3, #8]
+ 301:.\BLEApplications.c **** 		CapSenseNotificationCCCDhandle.value.val = CapSenseCCCDvalue;
+ 462              		.loc 1 301 0
+ 463 002c 3B1C     		mov	r3, r7
+ 464 002e 0C22     		mov	r2, #12
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 15
+
+
+ 465 0030 BA18     		add	r2, r7, r2
+ 466 0032 1A60     		str	r2, [r3]
+ 302:.\BLEApplications.c **** 		CapSenseNotificationCCCDhandle.value.len = CCC_DATA_LEN;
+ 467              		.loc 1 302 0
+ 468 0034 3B1C     		mov	r3, r7
+ 469 0036 0222     		mov	r2, #2
+ 470 0038 9A80     		strh	r2, [r3, #4]
+ 303:.\BLEApplications.c **** 		
+ 304:.\BLEApplications.c **** 		/* Report data to BLE component for sending data when read by Central device */
+ 305:.\BLEApplications.c **** 		CyBle_GattsWriteAttributeValue(&CapSenseNotificationCCCDhandle, ZERO, &cyBle_connHandle, CYBLE_GA
+ 471              		.loc 1 305 0
+ 472 003a 3A1C     		mov	r2, r7
+ 473 003c 074B     		ldr	r3, .L23+8
+ 474 003e 101C     		mov	r0, r2
+ 475 0040 0021     		mov	r1, #0
+ 476 0042 1A1C     		mov	r2, r3
+ 477 0044 0023     		mov	r3, #0
+ 478 0046 FFF7FEFF 		bl	CyBle_GattsWriteAttributeValue
+ 306:.\BLEApplications.c **** 		
+ 307:.\BLEApplications.c **** 		/* Register the updated attribute write value to BLE component once before
+ 308:.\BLEApplications.c **** 		* updating the next CCCD attribute value */
+ 309:.\BLEApplications.c **** 		CyBle_ProcessEvents();
+ 479              		.loc 1 309 0
+ 480 004a FFF7FEFF 		bl	CyBle_ProcessEvents
+ 481              	.L21:
+ 310:.\BLEApplications.c **** 	}	
+ 311:.\BLEApplications.c **** }
+ 482              		.loc 1 311 0
+ 483 004e BD46     		mov	sp, r7
+ 484 0050 04B0     		add	sp, sp, #16
+ 485              		@ sp needed
+ 486 0052 80BD     		pop	{r7, pc}
+ 487              	.L24:
+ 488              		.align	2
+ 489              	.L23:
+ 490 0054 00000000 		.word	updateNotificationCCCAttribute
+ 491 0058 00000000 		.word	sendCapSenseSliderNotifications
+ 492 005c 00000000 		.word	cyBle_connHandle
+ 493              		.cfi_endproc
+ 494              	.LFE40:
+ 495              		.size	UpdateNotificationCCCD, .-UpdateNotificationCCCD
+ 496              		.text
+ 497              	.Letext0:
+ 498              		.file 2 "Generated_Source\\PSoC4/cytypes.h"
+ 499              		.file 3 "Generated_Source\\PSoC4/BLE_1_StackGatt.h"
+ 500              		.file 4 "Generated_Source\\PSoC4/BLE_1_StackGattServer.h"
+ 501              		.file 5 "Generated_Source\\PSoC4/BLE_1_custom.h"
+ 502              		.file 6 "Generated_Source\\PSoC4/BLE_1_Stack.h"
+ 503              		.file 7 "Generated_Source\\PSoC4/BLE_1_eventHandler.h"
+ 504              		.section	.debug_info,"",%progbits
+ 505              	.Ldebug_info0:
+ 506 0000 A1050000 		.4byte	0x5a1
+ 507 0004 0400     		.2byte	0x4
+ 508 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 509 000a 04       		.byte	0x4
+ 510 000b 01       		.uleb128 0x1
+ 511 000c 6D0B0000 		.4byte	.LASF130
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 16
+
+
+ 512 0010 01       		.byte	0x1
+ 513 0011 900A0000 		.4byte	.LASF131
+ 514 0015 FD050000 		.4byte	.LASF132
+ 515 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 516 001d 00000000 		.4byte	0
+ 517 0021 00000000 		.4byte	.Ldebug_line0
+ 518 0025 02       		.uleb128 0x2
+ 519 0026 01       		.byte	0x1
+ 520 0027 06       		.byte	0x6
+ 521 0028 74020000 		.4byte	.LASF0
+ 522 002c 02       		.uleb128 0x2
+ 523 002d 01       		.byte	0x1
+ 524 002e 08       		.byte	0x8
+ 525 002f D9080000 		.4byte	.LASF1
+ 526 0033 02       		.uleb128 0x2
+ 527 0034 02       		.byte	0x2
+ 528 0035 05       		.byte	0x5
+ 529 0036 25090000 		.4byte	.LASF2
+ 530 003a 02       		.uleb128 0x2
+ 531 003b 02       		.byte	0x2
+ 532 003c 07       		.byte	0x7
+ 533 003d 50050000 		.4byte	.LASF3
+ 534 0041 02       		.uleb128 0x2
+ 535 0042 04       		.byte	0x4
+ 536 0043 05       		.byte	0x5
+ 537 0044 70010000 		.4byte	.LASF4
+ 538 0048 02       		.uleb128 0x2
+ 539 0049 04       		.byte	0x4
+ 540 004a 07       		.byte	0x7
+ 541 004b 9A040000 		.4byte	.LASF5
+ 542 004f 02       		.uleb128 0x2
+ 543 0050 08       		.byte	0x8
+ 544 0051 05       		.byte	0x5
+ 545 0052 66020000 		.4byte	.LASF6
+ 546 0056 02       		.uleb128 0x2
+ 547 0057 08       		.byte	0x8
+ 548 0058 07       		.byte	0x7
+ 549 0059 79010000 		.4byte	.LASF7
+ 550 005d 03       		.uleb128 0x3
+ 551 005e 04       		.byte	0x4
+ 552 005f 05       		.byte	0x5
+ 553 0060 696E7400 		.ascii	"int\000"
+ 554 0064 02       		.uleb128 0x2
+ 555 0065 04       		.byte	0x4
+ 556 0066 07       		.byte	0x7
+ 557 0067 6E040000 		.4byte	.LASF8
+ 558 006b 04       		.uleb128 0x4
+ 559 006c 64030000 		.4byte	.LASF9
+ 560 0070 02       		.byte	0x2
+ 561 0071 9801     		.2byte	0x198
+ 562 0073 2C000000 		.4byte	0x2c
+ 563 0077 04       		.uleb128 0x4
+ 564 0078 E7080000 		.4byte	.LASF10
+ 565 007c 02       		.byte	0x2
+ 566 007d 9901     		.2byte	0x199
+ 567 007f 3A000000 		.4byte	0x3a
+ 568 0083 04       		.uleb128 0x4
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 17
+
+
+ 569 0084 EE030000 		.4byte	.LASF11
+ 570 0088 02       		.byte	0x2
+ 571 0089 9A01     		.2byte	0x19a
+ 572 008b 48000000 		.4byte	0x48
+ 573 008f 02       		.uleb128 0x2
+ 574 0090 04       		.byte	0x4
+ 575 0091 04       		.byte	0x4
+ 576 0092 D3080000 		.4byte	.LASF12
+ 577 0096 02       		.uleb128 0x2
+ 578 0097 08       		.byte	0x8
+ 579 0098 04       		.byte	0x4
+ 580 0099 9E030000 		.4byte	.LASF13
+ 581 009d 02       		.uleb128 0x2
+ 582 009e 01       		.byte	0x1
+ 583 009f 08       		.byte	0x8
+ 584 00a0 200A0000 		.4byte	.LASF14
+ 585 00a4 02       		.uleb128 0x2
+ 586 00a5 04       		.byte	0x4
+ 587 00a6 07       		.byte	0x7
+ 588 00a7 11070000 		.4byte	.LASF15
+ 589 00ab 05       		.uleb128 0x5
+ 590 00ac 04       		.byte	0x4
+ 591 00ad 06       		.uleb128 0x6
+ 592 00ae 01       		.byte	0x1
+ 593 00af 06       		.byte	0x6
+ 594 00b0 4201     		.2byte	0x142
+ 595 00b2 6A020000 		.4byte	0x26a
+ 596 00b6 07       		.uleb128 0x7
+ 597 00b7 63050000 		.4byte	.LASF16
+ 598 00bb 00       		.sleb128 0
+ 599 00bc 07       		.uleb128 0x7
+ 600 00bd 80020000 		.4byte	.LASF17
+ 601 00c1 01       		.sleb128 1
+ 602 00c2 07       		.uleb128 0x7
+ 603 00c3 5E010000 		.4byte	.LASF18
+ 604 00c7 02       		.sleb128 2
+ 605 00c8 07       		.uleb128 0x7
+ 606 00c9 D30A0000 		.4byte	.LASF19
+ 607 00cd 03       		.sleb128 3
+ 608 00ce 07       		.uleb128 0x7
+ 609 00cf A3010000 		.4byte	.LASF20
+ 610 00d3 04       		.sleb128 4
+ 611 00d4 07       		.uleb128 0x7
+ 612 00d5 23000000 		.4byte	.LASF21
+ 613 00d9 05       		.sleb128 5
+ 614 00da 07       		.uleb128 0x7
+ 615 00db 93020000 		.4byte	.LASF22
+ 616 00df 06       		.sleb128 6
+ 617 00e0 07       		.uleb128 0x7
+ 618 00e1 A0060000 		.4byte	.LASF23
+ 619 00e5 20       		.sleb128 32
+ 620 00e6 07       		.uleb128 0x7
+ 621 00e7 D5020000 		.4byte	.LASF24
+ 622 00eb 21       		.sleb128 33
+ 623 00ec 07       		.uleb128 0x7
+ 624 00ed BA050000 		.4byte	.LASF25
+ 625 00f1 22       		.sleb128 34
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 18
+
+
+ 626 00f2 07       		.uleb128 0x7
+ 627 00f3 3D060000 		.4byte	.LASF26
+ 628 00f7 23       		.sleb128 35
+ 629 00f8 07       		.uleb128 0x7
+ 630 00f9 28080000 		.4byte	.LASF27
+ 631 00fd 24       		.sleb128 36
+ 632 00fe 07       		.uleb128 0x7
+ 633 00ff 7E070000 		.4byte	.LASF28
+ 634 0103 25       		.sleb128 37
+ 635 0104 07       		.uleb128 0x7
+ 636 0105 3C030000 		.4byte	.LASF29
+ 637 0109 26       		.sleb128 38
+ 638 010a 07       		.uleb128 0x7
+ 639 010b DE050000 		.4byte	.LASF30
+ 640 010f 27       		.sleb128 39
+ 641 0110 07       		.uleb128 0x7
+ 642 0111 250A0000 		.4byte	.LASF31
+ 643 0115 28       		.sleb128 40
+ 644 0116 07       		.uleb128 0x7
+ 645 0117 97090000 		.4byte	.LASF32
+ 646 011b 29       		.sleb128 41
+ 647 011c 07       		.uleb128 0x7
+ 648 011d 91000000 		.4byte	.LASF33
+ 649 0121 2A       		.sleb128 42
+ 650 0122 07       		.uleb128 0x7
+ 651 0123 AC020000 		.4byte	.LASF34
+ 652 0127 2B       		.sleb128 43
+ 653 0128 07       		.uleb128 0x7
+ 654 0129 220C0000 		.4byte	.LASF35
+ 655 012d 2C       		.sleb128 44
+ 656 012e 07       		.uleb128 0x7
+ 657 012f 0A020000 		.4byte	.LASF36
+ 658 0133 2D       		.sleb128 45
+ 659 0134 07       		.uleb128 0x7
+ 660 0135 EE080000 		.4byte	.LASF37
+ 661 0139 2E       		.sleb128 46
+ 662 013a 07       		.uleb128 0x7
+ 663 013b DB000000 		.4byte	.LASF38
+ 664 013f 2F       		.sleb128 47
+ 665 0140 07       		.uleb128 0x7
+ 666 0141 E4070000 		.4byte	.LASF39
+ 667 0145 30       		.sleb128 48
+ 668 0146 07       		.uleb128 0x7
+ 669 0147 850C0000 		.4byte	.LASF40
+ 670 014b 31       		.sleb128 49
+ 671 014c 07       		.uleb128 0x7
+ 672 014d C3070000 		.4byte	.LASF41
+ 673 0151 32       		.sleb128 50
+ 674 0152 07       		.uleb128 0x7
+ 675 0153 EF090000 		.4byte	.LASF42
+ 676 0157 33       		.sleb128 51
+ 677 0158 07       		.uleb128 0x7
+ 678 0159 D5090000 		.4byte	.LASF43
+ 679 015d C000     		.sleb128 64
+ 680 015f 07       		.uleb128 0x7
+ 681 0160 63060000 		.4byte	.LASF44
+ 682 0164 C100     		.sleb128 65
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 19
+
+
+ 683 0166 07       		.uleb128 0x7
+ 684 0167 DA0C0000 		.4byte	.LASF45
+ 685 016b C200     		.sleb128 66
+ 686 016d 07       		.uleb128 0x7
+ 687 016e EC0A0000 		.4byte	.LASF46
+ 688 0172 C300     		.sleb128 67
+ 689 0174 07       		.uleb128 0x7
+ 690 0175 C6040000 		.4byte	.LASF47
+ 691 0179 C400     		.sleb128 68
+ 692 017b 07       		.uleb128 0x7
+ 693 017c AC080000 		.4byte	.LASF48
+ 694 0180 C500     		.sleb128 69
+ 695 0182 07       		.uleb128 0x7
+ 696 0183 F0060000 		.4byte	.LASF49
+ 697 0187 C600     		.sleb128 70
+ 698 0189 07       		.uleb128 0x7
+ 699 018a 7A050000 		.4byte	.LASF50
+ 700 018e C700     		.sleb128 71
+ 701 0190 07       		.uleb128 0x7
+ 702 0191 FB0B0000 		.4byte	.LASF51
+ 703 0195 C800     		.sleb128 72
+ 704 0197 07       		.uleb128 0x7
+ 705 0198 EC020000 		.4byte	.LASF52
+ 706 019c C900     		.sleb128 73
+ 707 019e 07       		.uleb128 0x7
+ 708 019f 300B0000 		.4byte	.LASF53
+ 709 01a3 CA00     		.sleb128 74
+ 710 01a5 07       		.uleb128 0x7
+ 711 01a6 04010000 		.4byte	.LASF54
+ 712 01aa CB00     		.sleb128 75
+ 713 01ac 07       		.uleb128 0x7
+ 714 01ad AC040000 		.4byte	.LASF55
+ 715 01b1 CC00     		.sleb128 76
+ 716 01b3 07       		.uleb128 0x7
+ 717 01b4 A9070000 		.4byte	.LASF56
+ 718 01b8 CD00     		.sleb128 77
+ 719 01ba 07       		.uleb128 0x7
+ 720 01bb 05030000 		.4byte	.LASF57
+ 721 01bf CE00     		.sleb128 78
+ 722 01c1 07       		.uleb128 0x7
+ 723 01c2 78090000 		.4byte	.LASF58
+ 724 01c6 CF00     		.sleb128 79
+ 725 01c8 07       		.uleb128 0x7
+ 726 01c9 23010000 		.4byte	.LASF59
+ 727 01cd D000     		.sleb128 80
+ 728 01cf 07       		.uleb128 0x7
+ 729 01d0 7F030000 		.4byte	.LASF60
+ 730 01d4 D100     		.sleb128 81
+ 731 01d6 07       		.uleb128 0x7
+ 732 01d7 4E080000 		.4byte	.LASF61
+ 733 01db D200     		.sleb128 82
+ 734 01dd 07       		.uleb128 0x7
+ 735 01de 2F090000 		.4byte	.LASF62
+ 736 01e2 D300     		.sleb128 83
+ 737 01e4 07       		.uleb128 0x7
+ 738 01e5 B4090000 		.4byte	.LASF63
+ 739 01e9 D400     		.sleb128 84
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 20
+
+
+ 740 01eb 07       		.uleb128 0x7
+ 741 01ec E4040000 		.4byte	.LASF64
+ 742 01f0 D500     		.sleb128 85
+ 743 01f2 07       		.uleb128 0x7
+ 744 01f3 4C040000 		.4byte	.LASF65
+ 745 01f7 D600     		.sleb128 86
+ 746 01f9 07       		.uleb128 0x7
+ 747 01fa 470A0000 		.4byte	.LASF66
+ 748 01fe D700     		.sleb128 87
+ 749 0200 07       		.uleb128 0x7
+ 750 0201 27050000 		.4byte	.LASF67
+ 751 0205 D800     		.sleb128 88
+ 752 0207 07       		.uleb128 0x7
+ 753 0208 D6010000 		.4byte	.LASF68
+ 754 020c F000     		.sleb128 112
+ 755 020e 07       		.uleb128 0x7
+ 756 020f 5F0C0000 		.4byte	.LASF69
+ 757 0213 F100     		.sleb128 113
+ 758 0215 07       		.uleb128 0x7
+ 759 0216 84060000 		.4byte	.LASF70
+ 760 021a F200     		.sleb128 114
+ 761 021c 07       		.uleb128 0x7
+ 762 021d D2060000 		.4byte	.LASF71
+ 763 0221 F300     		.sleb128 115
+ 764 0223 07       		.uleb128 0x7
+ 765 0224 8E080000 		.4byte	.LASF72
+ 766 0228 F400     		.sleb128 116
+ 767 022a 07       		.uleb128 0x7
+ 768 022b A5030000 		.4byte	.LASF73
+ 769 022f F500     		.sleb128 117
+ 770 0231 07       		.uleb128 0x7
+ 771 0232 BA000000 		.4byte	.LASF74
+ 772 0236 F600     		.sleb128 118
+ 773 0238 07       		.uleb128 0x7
+ 774 0239 53000000 		.4byte	.LASF75
+ 775 023d F700     		.sleb128 119
+ 776 023f 07       		.uleb128 0x7
+ 777 0240 00000000 		.4byte	.LASF76
+ 778 0244 F800     		.sleb128 120
+ 779 0246 07       		.uleb128 0x7
+ 780 0247 A40A0000 		.4byte	.LASF77
+ 781 024b F900     		.sleb128 121
+ 782 024d 07       		.uleb128 0x7
+ 783 024e 17040000 		.4byte	.LASF78
+ 784 0252 FA00     		.sleb128 122
+ 785 0254 07       		.uleb128 0x7
+ 786 0255 B8010000 		.4byte	.LASF79
+ 787 0259 FA01     		.sleb128 250
+ 788 025b 07       		.uleb128 0x7
+ 789 025c 7B040000 		.4byte	.LASF80
+ 790 0260 FB01     		.sleb128 251
+ 791 0262 07       		.uleb128 0x7
+ 792 0263 70070000 		.4byte	.LASF81
+ 793 0267 FF01     		.sleb128 255
+ 794 0269 00       		.byte	0
+ 795 026a 08       		.uleb128 0x8
+ 796 026b 04       		.byte	0x4
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 21
+
+
+ 797 026c 6B000000 		.4byte	0x6b
+ 798 0270 04       		.uleb128 0x4
+ 799 0271 A90C0000 		.4byte	.LASF82
+ 800 0275 03       		.byte	0x3
+ 801 0276 9201     		.2byte	0x192
+ 802 0278 77000000 		.4byte	0x77
+ 803 027c 09       		.uleb128 0x9
+ 804 027d 02       		.byte	0x2
+ 805 027e 03       		.byte	0x3
+ 806 027f 9C01     		.2byte	0x19c
+ 807 0281 A0020000 		.4byte	0x2a0
+ 808 0285 0A       		.uleb128 0xa
+ 809 0286 460C0000 		.4byte	.LASF83
+ 810 028a 03       		.byte	0x3
+ 811 028b A301     		.2byte	0x1a3
+ 812 028d 6B000000 		.4byte	0x6b
+ 813 0291 00       		.byte	0
+ 814 0292 0A       		.uleb128 0xa
+ 815 0293 7E060000 		.4byte	.LASF84
+ 816 0297 03       		.byte	0x3
+ 817 0298 A901     		.2byte	0x1a9
+ 818 029a 6B000000 		.4byte	0x6b
+ 819 029e 01       		.byte	0x1
+ 820 029f 00       		.byte	0
+ 821 02a0 04       		.uleb128 0x4
+ 822 02a1 72000000 		.4byte	.LASF85
+ 823 02a5 03       		.byte	0x3
+ 824 02a6 AB01     		.2byte	0x1ab
+ 825 02a8 7C020000 		.4byte	0x27c
+ 826 02ac 09       		.uleb128 0x9
+ 827 02ad 08       		.byte	0x8
+ 828 02ae 03       		.byte	0x3
+ 829 02af C701     		.2byte	0x1c7
+ 830 02b1 DD020000 		.4byte	0x2dd
+ 831 02b5 0B       		.uleb128 0xb
+ 832 02b6 76616C00 		.ascii	"val\000"
+ 833 02ba 03       		.byte	0x3
+ 834 02bb CA01     		.2byte	0x1ca
+ 835 02bd 6A020000 		.4byte	0x26a
+ 836 02c1 00       		.byte	0
+ 837 02c2 0B       		.uleb128 0xb
+ 838 02c3 6C656E00 		.ascii	"len\000"
+ 839 02c7 03       		.byte	0x3
+ 840 02c8 CD01     		.2byte	0x1cd
+ 841 02ca 77000000 		.4byte	0x77
+ 842 02ce 04       		.byte	0x4
+ 843 02cf 0A       		.uleb128 0xa
+ 844 02d0 CB020000 		.4byte	.LASF86
+ 845 02d4 03       		.byte	0x3
+ 846 02d5 D401     		.2byte	0x1d4
+ 847 02d7 77000000 		.4byte	0x77
+ 848 02db 06       		.byte	0x6
+ 849 02dc 00       		.byte	0
+ 850 02dd 04       		.uleb128 0x4
+ 851 02de 90010000 		.4byte	.LASF87
+ 852 02e2 03       		.byte	0x3
+ 853 02e3 D601     		.2byte	0x1d6
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 22
+
+
+ 854 02e5 AC020000 		.4byte	0x2ac
+ 855 02e9 09       		.uleb128 0x9
+ 856 02ea 0C       		.byte	0xc
+ 857 02eb 03       		.byte	0x3
+ 858 02ec D901     		.2byte	0x1d9
+ 859 02ee 0D030000 		.4byte	0x30d
+ 860 02f2 0A       		.uleb128 0xa
+ 861 02f3 46040000 		.4byte	.LASF88
+ 862 02f7 03       		.byte	0x3
+ 863 02f8 DC01     		.2byte	0x1dc
+ 864 02fa DD020000 		.4byte	0x2dd
+ 865 02fe 00       		.byte	0
+ 866 02ff 0A       		.uleb128 0xa
+ 867 0300 3B040000 		.4byte	.LASF89
+ 868 0304 03       		.byte	0x3
+ 869 0305 DF01     		.2byte	0x1df
+ 870 0307 70020000 		.4byte	0x270
+ 871 030b 08       		.byte	0x8
+ 872 030c 00       		.byte	0
+ 873 030d 04       		.uleb128 0x4
+ 874 030e 6F080000 		.4byte	.LASF90
+ 875 0312 03       		.byte	0x3
+ 876 0313 E101     		.2byte	0x1e1
+ 877 0315 E9020000 		.4byte	0x2e9
+ 878 0319 0C       		.uleb128 0xc
+ 879 031a 38070000 		.4byte	.LASF91
+ 880 031e 04       		.byte	0x4
+ 881 031f 34       		.byte	0x34
+ 882 0320 0D030000 		.4byte	0x30d
+ 883 0324 0D       		.uleb128 0xd
+ 884 0325 10       		.byte	0x10
+ 885 0326 04       		.byte	0x4
+ 886 0327 8A       		.byte	0x8a
+ 887 0328 45030000 		.4byte	0x345
+ 888 032c 0E       		.uleb128 0xe
+ 889 032d 86000000 		.4byte	.LASF92
+ 890 0331 04       		.byte	0x4
+ 891 0332 8D       		.byte	0x8d
+ 892 0333 A0020000 		.4byte	0x2a0
+ 893 0337 00       		.byte	0
+ 894 0338 0E       		.uleb128 0xe
+ 895 0339 C4060000 		.4byte	.LASF93
+ 896 033d 04       		.byte	0x4
+ 897 033e 90       		.byte	0x90
+ 898 033f 0D030000 		.4byte	0x30d
+ 899 0343 04       		.byte	0x4
+ 900 0344 00       		.byte	0
+ 901 0345 0C       		.uleb128 0xc
+ 902 0346 1A070000 		.4byte	.LASF94
+ 903 034a 04       		.byte	0x4
+ 904 034b 92       		.byte	0x92
+ 905 034c 24030000 		.4byte	0x324
+ 906 0350 0D       		.uleb128 0xd
+ 907 0351 06       		.byte	0x6
+ 908 0352 05       		.byte	0x5
+ 909 0353 4C       		.byte	0x4c
+ 910 0354 71030000 		.4byte	0x371
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 23
+
+
+ 911 0358 0E       		.uleb128 0xe
+ 912 0359 C50C0000 		.4byte	.LASF95
+ 913 035d 05       		.byte	0x5
+ 914 035e 4F       		.byte	0x4f
+ 915 035f 70020000 		.4byte	0x270
+ 916 0363 00       		.byte	0
+ 917 0364 0E       		.uleb128 0xe
+ 918 0365 F80C0000 		.4byte	.LASF96
+ 919 0369 05       		.byte	0x5
+ 920 036a 51       		.byte	0x51
+ 921 036b 71030000 		.4byte	0x371
+ 922 036f 02       		.byte	0x2
+ 923 0370 00       		.byte	0
+ 924 0371 0F       		.uleb128 0xf
+ 925 0372 70020000 		.4byte	0x270
+ 926 0376 81030000 		.4byte	0x381
+ 927 037a 10       		.uleb128 0x10
+ 928 037b A4000000 		.4byte	0xa4
+ 929 037f 01       		.byte	0x1
+ 930 0380 00       		.byte	0
+ 931 0381 0C       		.uleb128 0xc
+ 932 0382 6A030000 		.4byte	.LASF97
+ 933 0386 05       		.byte	0x5
+ 934 0387 53       		.byte	0x53
+ 935 0388 50030000 		.4byte	0x350
+ 936 038c 0D       		.uleb128 0xd
+ 937 038d 08       		.byte	0x8
+ 938 038e 05       		.byte	0x5
+ 939 038f 56       		.byte	0x56
+ 940 0390 AD030000 		.4byte	0x3ad
+ 941 0394 0E       		.uleb128 0xe
+ 942 0395 4D010000 		.4byte	.LASF98
+ 943 0399 05       		.byte	0x5
+ 944 039a 59       		.byte	0x59
+ 945 039b 70020000 		.4byte	0x270
+ 946 039f 00       		.byte	0
+ 947 03a0 0E       		.uleb128 0xe
+ 948 03a1 DF030000 		.4byte	.LASF99
+ 949 03a5 05       		.byte	0x5
+ 950 03a6 5C       		.byte	0x5c
+ 951 03a7 AD030000 		.4byte	0x3ad
+ 952 03ab 02       		.byte	0x2
+ 953 03ac 00       		.byte	0
+ 954 03ad 0F       		.uleb128 0xf
+ 955 03ae 81030000 		.4byte	0x381
+ 956 03b2 BD030000 		.4byte	0x3bd
+ 957 03b6 10       		.uleb128 0x10
+ 958 03b7 A4000000 		.4byte	0xa4
+ 959 03bb 00       		.byte	0
+ 960 03bc 00       		.byte	0
+ 961 03bd 0C       		.uleb128 0xc
+ 962 03be 4F0C0000 		.4byte	.LASF100
+ 963 03c2 05       		.byte	0x5
+ 964 03c3 5E       		.byte	0x5e
+ 965 03c4 8C030000 		.4byte	0x38c
+ 966 03c8 06       		.uleb128 0x6
+ 967 03c9 01       		.byte	0x1
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 24
+
+
+ 968 03ca 07       		.byte	0x7
+ 969 03cb BF07     		.2byte	0x7bf
+ 970 03cd F0030000 		.4byte	0x3f0
+ 971 03d1 07       		.uleb128 0x7
+ 972 03d2 3F000000 		.4byte	.LASF101
+ 973 03d6 00       		.sleb128 0
+ 974 03d7 07       		.uleb128 0x7
+ 975 03d8 57070000 		.4byte	.LASF102
+ 976 03dc 01       		.sleb128 1
+ 977 03dd 07       		.uleb128 0x7
+ 978 03de 50090000 		.4byte	.LASF103
+ 979 03e2 02       		.sleb128 2
+ 980 03e3 07       		.uleb128 0x7
+ 981 03e4 4E020000 		.4byte	.LASF104
+ 982 03e8 03       		.sleb128 3
+ 983 03e9 07       		.uleb128 0x7
+ 984 03ea 23030000 		.4byte	.LASF105
+ 985 03ee 04       		.sleb128 4
+ 986 03ef 00       		.byte	0
+ 987 03f0 04       		.uleb128 0x4
+ 988 03f1 220B0000 		.4byte	.LASF106
+ 989 03f5 07       		.byte	0x7
+ 990 03f6 CD07     		.2byte	0x7cd
+ 991 03f8 C8030000 		.4byte	0x3c8
+ 992 03fc 11       		.uleb128 0x11
+ 993 03fd 05080000 		.4byte	.LASF109
+ 994 0401 01       		.byte	0x1
+ 995 0402 58       		.byte	0x58
+ 996 0403 00000000 		.4byte	.LFB37
+ 997 0407 14010000 		.4byte	.LFE37-.LFB37
+ 998 040b 01       		.uleb128 0x1
+ 999 040c 9C       		.byte	0x9c
+ 1000 040d 3C040000 		.4byte	0x43c
+ 1001 0411 12       		.uleb128 0x12
+ 1002 0412 4A050000 		.4byte	.LASF107
+ 1003 0416 01       		.byte	0x1
+ 1004 0417 58       		.byte	0x58
+ 1005 0418 83000000 		.4byte	0x83
+ 1006 041c 02       		.uleb128 0x2
+ 1007 041d 91       		.byte	0x91
+ 1008 041e 6C       		.sleb128 -20
+ 1009 041f 12       		.uleb128 0x12
+ 1010 0420 0A0B0000 		.4byte	.LASF108
+ 1011 0424 01       		.byte	0x1
+ 1012 0425 58       		.byte	0x58
+ 1013 0426 AB000000 		.4byte	0xab
+ 1014 042a 02       		.uleb128 0x2
+ 1015 042b 91       		.byte	0x91
+ 1016 042c 68       		.sleb128 -24
+ 1017 042d 13       		.uleb128 0x13
+ 1018 042e 0C040000 		.4byte	.LASF112
+ 1019 0432 01       		.byte	0x1
+ 1020 0433 5A       		.byte	0x5a
+ 1021 0434 3C040000 		.4byte	0x43c
+ 1022 0438 02       		.uleb128 0x2
+ 1023 0439 91       		.byte	0x91
+ 1024 043a 74       		.sleb128 -12
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 25
+
+
+ 1025 043b 00       		.byte	0
+ 1026 043c 08       		.uleb128 0x8
+ 1027 043d 04       		.byte	0x4
+ 1028 043e 45030000 		.4byte	0x345
+ 1029 0442 11       		.uleb128 0x11
+ 1030 0443 C6030000 		.4byte	.LASF110
+ 1031 0447 01       		.byte	0x1
+ 1032 0448 D2       		.byte	0xd2
+ 1033 0449 00000000 		.4byte	.LFB38
+ 1034 044d 50000000 		.4byte	.LFE38-.LFB38
+ 1035 0451 01       		.uleb128 0x1
+ 1036 0452 9C       		.byte	0x9c
+ 1037 0453 74040000 		.4byte	0x474
+ 1038 0457 12       		.uleb128 0x12
+ 1039 0458 12090000 		.4byte	.LASF111
+ 1040 045c 01       		.byte	0x1
+ 1041 045d D2       		.byte	0xd2
+ 1042 045e 6B000000 		.4byte	0x6b
+ 1043 0462 02       		.uleb128 0x2
+ 1044 0463 91       		.byte	0x91
+ 1045 0464 67       		.sleb128 -25
+ 1046 0465 13       		.uleb128 0x13
+ 1047 0466 33020000 		.4byte	.LASF113
+ 1048 046a 01       		.byte	0x1
+ 1049 046b D5       		.byte	0xd5
+ 1050 046c 19030000 		.4byte	0x319
+ 1051 0470 02       		.uleb128 0x2
+ 1052 0471 91       		.byte	0x91
+ 1053 0472 6C       		.sleb128 -20
+ 1054 0473 00       		.byte	0
+ 1055 0474 11       		.uleb128 0x11
+ 1056 0475 150B0000 		.4byte	.LASF114
+ 1057 0479 01       		.byte	0x1
+ 1058 047a F0       		.byte	0xf0
+ 1059 047b 00000000 		.4byte	.LFB39
+ 1060 047f C8000000 		.4byte	.LFE39-.LFB39
+ 1061 0483 01       		.uleb128 0x1
+ 1062 0484 9C       		.byte	0x9c
+ 1063 0485 C2040000 		.4byte	0x4c2
+ 1064 0489 13       		.uleb128 0x13
+ 1065 048a 160A0000 		.4byte	.LASF115
+ 1066 048e 01       		.byte	0x1
+ 1067 048f F3       		.byte	0xf3
+ 1068 0490 6B000000 		.4byte	0x6b
+ 1069 0494 02       		.uleb128 0x2
+ 1070 0495 91       		.byte	0x91
+ 1071 0496 76       		.sleb128 -10
+ 1072 0497 13       		.uleb128 0x13
+ 1073 0498 C70A0000 		.4byte	.LASF116
+ 1074 049c 01       		.byte	0x1
+ 1075 049d F4       		.byte	0xf4
+ 1076 049e 6B000000 		.4byte	0x6b
+ 1077 04a2 02       		.uleb128 0x2
+ 1078 04a3 91       		.byte	0x91
+ 1079 04a4 75       		.sleb128 -11
+ 1080 04a5 13       		.uleb128 0x13
+ 1081 04a6 42010000 		.4byte	.LASF117
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 26
+
+
+ 1082 04aa 01       		.byte	0x1
+ 1083 04ab F5       		.byte	0xf5
+ 1084 04ac 6B000000 		.4byte	0x6b
+ 1085 04b0 02       		.uleb128 0x2
+ 1086 04b1 91       		.byte	0x91
+ 1087 04b2 74       		.sleb128 -12
+ 1088 04b3 13       		.uleb128 0x13
+ 1089 04b4 98050000 		.4byte	.LASF118
+ 1090 04b8 01       		.byte	0x1
+ 1091 04b9 F6       		.byte	0xf6
+ 1092 04ba 6B000000 		.4byte	0x6b
+ 1093 04be 02       		.uleb128 0x2
+ 1094 04bf 91       		.byte	0x91
+ 1095 04c0 77       		.sleb128 -9
+ 1096 04c1 00       		.byte	0
+ 1097 04c2 14       		.uleb128 0x14
+ 1098 04c3 F5030000 		.4byte	.LASF119
+ 1099 04c7 01       		.byte	0x1
+ 1100 04c8 1A01     		.2byte	0x11a
+ 1101 04ca 00000000 		.4byte	.LFB40
+ 1102 04ce 60000000 		.4byte	.LFE40-.LFB40
+ 1103 04d2 01       		.uleb128 0x1
+ 1104 04d3 9C       		.byte	0x9c
+ 1105 04d4 F7040000 		.4byte	0x4f7
+ 1106 04d8 15       		.uleb128 0x15
+ 1107 04d9 66090000 		.4byte	.LASF120
+ 1108 04dd 01       		.byte	0x1
+ 1109 04de 1D01     		.2byte	0x11d
+ 1110 04e0 F7040000 		.4byte	0x4f7
+ 1111 04e4 02       		.uleb128 0x2
+ 1112 04e5 91       		.byte	0x91
+ 1113 04e6 74       		.sleb128 -12
+ 1114 04e7 15       		.uleb128 0x15
+ 1115 04e8 08050000 		.4byte	.LASF121
+ 1116 04ec 01       		.byte	0x1
+ 1117 04ed 2001     		.2byte	0x120
+ 1118 04ef 0D030000 		.4byte	0x30d
+ 1119 04f3 02       		.uleb128 0x2
+ 1120 04f4 91       		.byte	0x91
+ 1121 04f5 68       		.sleb128 -24
+ 1122 04f6 00       		.byte	0
+ 1123 04f7 0F       		.uleb128 0xf
+ 1124 04f8 6B000000 		.4byte	0x6b
+ 1125 04fc 07050000 		.4byte	0x507
+ 1126 0500 10       		.uleb128 0x10
+ 1127 0501 A4000000 		.4byte	0xa4
+ 1128 0505 01       		.byte	0x1
+ 1129 0506 00       		.byte	0
+ 1130 0507 0F       		.uleb128 0xf
+ 1131 0508 BD030000 		.4byte	0x3bd
+ 1132 050c 17050000 		.4byte	0x517
+ 1133 0510 10       		.uleb128 0x10
+ 1134 0511 A4000000 		.4byte	0xa4
+ 1135 0515 01       		.byte	0x1
+ 1136 0516 00       		.byte	0
+ 1137 0517 16       		.uleb128 0x16
+ 1138 0518 FC010000 		.4byte	.LASF122
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 27
+
+
+ 1139 051c 05       		.byte	0x5
+ 1140 051d 9C       		.byte	0x9c
+ 1141 051e 22050000 		.4byte	0x522
+ 1142 0522 17       		.uleb128 0x17
+ 1143 0523 07050000 		.4byte	0x507
+ 1144 0527 18       		.uleb128 0x18
+ 1145 0528 31060000 		.4byte	.LASF123
+ 1146 052c 07       		.byte	0x7
+ 1147 052d DA09     		.2byte	0x9da
+ 1148 052f F0030000 		.4byte	0x3f0
+ 1149 0533 18       		.uleb128 0x18
+ 1150 0534 98070000 		.4byte	.LASF124
+ 1151 0538 07       		.byte	0x7
+ 1152 0539 DB09     		.2byte	0x9db
+ 1153 053b A0020000 		.4byte	0x2a0
+ 1154 053f 19       		.uleb128 0x19
+ 1155 0540 18080000 		.4byte	.LASF125
+ 1156 0544 01       		.byte	0x1
+ 1157 0545 42       		.byte	0x42
+ 1158 0546 6B000000 		.4byte	0x6b
+ 1159 054a 05       		.uleb128 0x5
+ 1160 054b 03       		.byte	0x3
+ 1161 054c 00000000 		.4byte	deviceConnected
+ 1162 0550 19       		.uleb128 0x19
+ 1163 0551 700A0000 		.4byte	.LASF126
+ 1164 0555 01       		.byte	0x1
+ 1165 0556 39       		.byte	0x39
+ 1166 0557 6B000000 		.4byte	0x6b
+ 1167 055b 05       		.uleb128 0x5
+ 1168 055c 03       		.byte	0x3
+ 1169 055d 00000000 		.4byte	sendCapSenseSliderNotifications
+ 1170 0561 19       		.uleb128 0x19
+ 1171 0562 44080000 		.4byte	.LASF127
+ 1172 0566 01       		.byte	0x1
+ 1173 0567 35       		.byte	0x35
+ 1174 0568 0D030000 		.4byte	0x30d
+ 1175 056c 05       		.uleb128 0x5
+ 1176 056d 03       		.byte	0x3
+ 1177 056e 00000000 		.4byte	rgbHandle
+ 1178 0572 0F       		.uleb128 0xf
+ 1179 0573 6B000000 		.4byte	0x6b
+ 1180 0577 82050000 		.4byte	0x582
+ 1181 057b 10       		.uleb128 0x10
+ 1182 057c A4000000 		.4byte	0xa4
+ 1183 0580 03       		.byte	0x3
+ 1184 0581 00       		.byte	0
+ 1185 0582 19       		.uleb128 0x19
+ 1186 0583 AF050000 		.4byte	.LASF128
+ 1187 0587 01       		.byte	0x1
+ 1188 0588 3D       		.byte	0x3d
+ 1189 0589 72050000 		.4byte	0x572
+ 1190 058d 05       		.uleb128 0x5
+ 1191 058e 03       		.byte	0x3
+ 1192 058f 00000000 		.4byte	RGBledData
+ 1193 0593 19       		.uleb128 0x19
+ 1194 0594 4E0B0000 		.4byte	.LASF129
+ 1195 0598 01       		.byte	0x1
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 28
+
+
+ 1196 0599 46       		.byte	0x46
+ 1197 059a 6B000000 		.4byte	0x6b
+ 1198 059e 05       		.uleb128 0x5
+ 1199 059f 03       		.byte	0x3
+ 1200 05a0 00000000 		.4byte	updateNotificationCCCAttribute
+ 1201 05a4 00       		.byte	0
+ 1202              		.section	.debug_abbrev,"",%progbits
+ 1203              	.Ldebug_abbrev0:
+ 1204 0000 01       		.uleb128 0x1
+ 1205 0001 11       		.uleb128 0x11
+ 1206 0002 01       		.byte	0x1
+ 1207 0003 25       		.uleb128 0x25
+ 1208 0004 0E       		.uleb128 0xe
+ 1209 0005 13       		.uleb128 0x13
+ 1210 0006 0B       		.uleb128 0xb
+ 1211 0007 03       		.uleb128 0x3
+ 1212 0008 0E       		.uleb128 0xe
+ 1213 0009 1B       		.uleb128 0x1b
+ 1214 000a 0E       		.uleb128 0xe
+ 1215 000b 55       		.uleb128 0x55
+ 1216 000c 17       		.uleb128 0x17
+ 1217 000d 11       		.uleb128 0x11
+ 1218 000e 01       		.uleb128 0x1
+ 1219 000f 10       		.uleb128 0x10
+ 1220 0010 17       		.uleb128 0x17
+ 1221 0011 00       		.byte	0
+ 1222 0012 00       		.byte	0
+ 1223 0013 02       		.uleb128 0x2
+ 1224 0014 24       		.uleb128 0x24
+ 1225 0015 00       		.byte	0
+ 1226 0016 0B       		.uleb128 0xb
+ 1227 0017 0B       		.uleb128 0xb
+ 1228 0018 3E       		.uleb128 0x3e
+ 1229 0019 0B       		.uleb128 0xb
+ 1230 001a 03       		.uleb128 0x3
+ 1231 001b 0E       		.uleb128 0xe
+ 1232 001c 00       		.byte	0
+ 1233 001d 00       		.byte	0
+ 1234 001e 03       		.uleb128 0x3
+ 1235 001f 24       		.uleb128 0x24
+ 1236 0020 00       		.byte	0
+ 1237 0021 0B       		.uleb128 0xb
+ 1238 0022 0B       		.uleb128 0xb
+ 1239 0023 3E       		.uleb128 0x3e
+ 1240 0024 0B       		.uleb128 0xb
+ 1241 0025 03       		.uleb128 0x3
+ 1242 0026 08       		.uleb128 0x8
+ 1243 0027 00       		.byte	0
+ 1244 0028 00       		.byte	0
+ 1245 0029 04       		.uleb128 0x4
+ 1246 002a 16       		.uleb128 0x16
+ 1247 002b 00       		.byte	0
+ 1248 002c 03       		.uleb128 0x3
+ 1249 002d 0E       		.uleb128 0xe
+ 1250 002e 3A       		.uleb128 0x3a
+ 1251 002f 0B       		.uleb128 0xb
+ 1252 0030 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 29
+
+
+ 1253 0031 05       		.uleb128 0x5
+ 1254 0032 49       		.uleb128 0x49
+ 1255 0033 13       		.uleb128 0x13
+ 1256 0034 00       		.byte	0
+ 1257 0035 00       		.byte	0
+ 1258 0036 05       		.uleb128 0x5
+ 1259 0037 0F       		.uleb128 0xf
+ 1260 0038 00       		.byte	0
+ 1261 0039 0B       		.uleb128 0xb
+ 1262 003a 0B       		.uleb128 0xb
+ 1263 003b 00       		.byte	0
+ 1264 003c 00       		.byte	0
+ 1265 003d 06       		.uleb128 0x6
+ 1266 003e 04       		.uleb128 0x4
+ 1267 003f 01       		.byte	0x1
+ 1268 0040 0B       		.uleb128 0xb
+ 1269 0041 0B       		.uleb128 0xb
+ 1270 0042 3A       		.uleb128 0x3a
+ 1271 0043 0B       		.uleb128 0xb
+ 1272 0044 3B       		.uleb128 0x3b
+ 1273 0045 05       		.uleb128 0x5
+ 1274 0046 01       		.uleb128 0x1
+ 1275 0047 13       		.uleb128 0x13
+ 1276 0048 00       		.byte	0
+ 1277 0049 00       		.byte	0
+ 1278 004a 07       		.uleb128 0x7
+ 1279 004b 28       		.uleb128 0x28
+ 1280 004c 00       		.byte	0
+ 1281 004d 03       		.uleb128 0x3
+ 1282 004e 0E       		.uleb128 0xe
+ 1283 004f 1C       		.uleb128 0x1c
+ 1284 0050 0D       		.uleb128 0xd
+ 1285 0051 00       		.byte	0
+ 1286 0052 00       		.byte	0
+ 1287 0053 08       		.uleb128 0x8
+ 1288 0054 0F       		.uleb128 0xf
+ 1289 0055 00       		.byte	0
+ 1290 0056 0B       		.uleb128 0xb
+ 1291 0057 0B       		.uleb128 0xb
+ 1292 0058 49       		.uleb128 0x49
+ 1293 0059 13       		.uleb128 0x13
+ 1294 005a 00       		.byte	0
+ 1295 005b 00       		.byte	0
+ 1296 005c 09       		.uleb128 0x9
+ 1297 005d 13       		.uleb128 0x13
+ 1298 005e 01       		.byte	0x1
+ 1299 005f 0B       		.uleb128 0xb
+ 1300 0060 0B       		.uleb128 0xb
+ 1301 0061 3A       		.uleb128 0x3a
+ 1302 0062 0B       		.uleb128 0xb
+ 1303 0063 3B       		.uleb128 0x3b
+ 1304 0064 05       		.uleb128 0x5
+ 1305 0065 01       		.uleb128 0x1
+ 1306 0066 13       		.uleb128 0x13
+ 1307 0067 00       		.byte	0
+ 1308 0068 00       		.byte	0
+ 1309 0069 0A       		.uleb128 0xa
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 30
+
+
+ 1310 006a 0D       		.uleb128 0xd
+ 1311 006b 00       		.byte	0
+ 1312 006c 03       		.uleb128 0x3
+ 1313 006d 0E       		.uleb128 0xe
+ 1314 006e 3A       		.uleb128 0x3a
+ 1315 006f 0B       		.uleb128 0xb
+ 1316 0070 3B       		.uleb128 0x3b
+ 1317 0071 05       		.uleb128 0x5
+ 1318 0072 49       		.uleb128 0x49
+ 1319 0073 13       		.uleb128 0x13
+ 1320 0074 38       		.uleb128 0x38
+ 1321 0075 0B       		.uleb128 0xb
+ 1322 0076 00       		.byte	0
+ 1323 0077 00       		.byte	0
+ 1324 0078 0B       		.uleb128 0xb
+ 1325 0079 0D       		.uleb128 0xd
+ 1326 007a 00       		.byte	0
+ 1327 007b 03       		.uleb128 0x3
+ 1328 007c 08       		.uleb128 0x8
+ 1329 007d 3A       		.uleb128 0x3a
+ 1330 007e 0B       		.uleb128 0xb
+ 1331 007f 3B       		.uleb128 0x3b
+ 1332 0080 05       		.uleb128 0x5
+ 1333 0081 49       		.uleb128 0x49
+ 1334 0082 13       		.uleb128 0x13
+ 1335 0083 38       		.uleb128 0x38
+ 1336 0084 0B       		.uleb128 0xb
+ 1337 0085 00       		.byte	0
+ 1338 0086 00       		.byte	0
+ 1339 0087 0C       		.uleb128 0xc
+ 1340 0088 16       		.uleb128 0x16
+ 1341 0089 00       		.byte	0
+ 1342 008a 03       		.uleb128 0x3
+ 1343 008b 0E       		.uleb128 0xe
+ 1344 008c 3A       		.uleb128 0x3a
+ 1345 008d 0B       		.uleb128 0xb
+ 1346 008e 3B       		.uleb128 0x3b
+ 1347 008f 0B       		.uleb128 0xb
+ 1348 0090 49       		.uleb128 0x49
+ 1349 0091 13       		.uleb128 0x13
+ 1350 0092 00       		.byte	0
+ 1351 0093 00       		.byte	0
+ 1352 0094 0D       		.uleb128 0xd
+ 1353 0095 13       		.uleb128 0x13
+ 1354 0096 01       		.byte	0x1
+ 1355 0097 0B       		.uleb128 0xb
+ 1356 0098 0B       		.uleb128 0xb
+ 1357 0099 3A       		.uleb128 0x3a
+ 1358 009a 0B       		.uleb128 0xb
+ 1359 009b 3B       		.uleb128 0x3b
+ 1360 009c 0B       		.uleb128 0xb
+ 1361 009d 01       		.uleb128 0x1
+ 1362 009e 13       		.uleb128 0x13
+ 1363 009f 00       		.byte	0
+ 1364 00a0 00       		.byte	0
+ 1365 00a1 0E       		.uleb128 0xe
+ 1366 00a2 0D       		.uleb128 0xd
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 31
+
+
+ 1367 00a3 00       		.byte	0
+ 1368 00a4 03       		.uleb128 0x3
+ 1369 00a5 0E       		.uleb128 0xe
+ 1370 00a6 3A       		.uleb128 0x3a
+ 1371 00a7 0B       		.uleb128 0xb
+ 1372 00a8 3B       		.uleb128 0x3b
+ 1373 00a9 0B       		.uleb128 0xb
+ 1374 00aa 49       		.uleb128 0x49
+ 1375 00ab 13       		.uleb128 0x13
+ 1376 00ac 38       		.uleb128 0x38
+ 1377 00ad 0B       		.uleb128 0xb
+ 1378 00ae 00       		.byte	0
+ 1379 00af 00       		.byte	0
+ 1380 00b0 0F       		.uleb128 0xf
+ 1381 00b1 01       		.uleb128 0x1
+ 1382 00b2 01       		.byte	0x1
+ 1383 00b3 49       		.uleb128 0x49
+ 1384 00b4 13       		.uleb128 0x13
+ 1385 00b5 01       		.uleb128 0x1
+ 1386 00b6 13       		.uleb128 0x13
+ 1387 00b7 00       		.byte	0
+ 1388 00b8 00       		.byte	0
+ 1389 00b9 10       		.uleb128 0x10
+ 1390 00ba 21       		.uleb128 0x21
+ 1391 00bb 00       		.byte	0
+ 1392 00bc 49       		.uleb128 0x49
+ 1393 00bd 13       		.uleb128 0x13
+ 1394 00be 2F       		.uleb128 0x2f
+ 1395 00bf 0B       		.uleb128 0xb
+ 1396 00c0 00       		.byte	0
+ 1397 00c1 00       		.byte	0
+ 1398 00c2 11       		.uleb128 0x11
+ 1399 00c3 2E       		.uleb128 0x2e
+ 1400 00c4 01       		.byte	0x1
+ 1401 00c5 3F       		.uleb128 0x3f
+ 1402 00c6 19       		.uleb128 0x19
+ 1403 00c7 03       		.uleb128 0x3
+ 1404 00c8 0E       		.uleb128 0xe
+ 1405 00c9 3A       		.uleb128 0x3a
+ 1406 00ca 0B       		.uleb128 0xb
+ 1407 00cb 3B       		.uleb128 0x3b
+ 1408 00cc 0B       		.uleb128 0xb
+ 1409 00cd 27       		.uleb128 0x27
+ 1410 00ce 19       		.uleb128 0x19
+ 1411 00cf 11       		.uleb128 0x11
+ 1412 00d0 01       		.uleb128 0x1
+ 1413 00d1 12       		.uleb128 0x12
+ 1414 00d2 06       		.uleb128 0x6
+ 1415 00d3 40       		.uleb128 0x40
+ 1416 00d4 18       		.uleb128 0x18
+ 1417 00d5 9642     		.uleb128 0x2116
+ 1418 00d7 19       		.uleb128 0x19
+ 1419 00d8 01       		.uleb128 0x1
+ 1420 00d9 13       		.uleb128 0x13
+ 1421 00da 00       		.byte	0
+ 1422 00db 00       		.byte	0
+ 1423 00dc 12       		.uleb128 0x12
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 32
+
+
+ 1424 00dd 05       		.uleb128 0x5
+ 1425 00de 00       		.byte	0
+ 1426 00df 03       		.uleb128 0x3
+ 1427 00e0 0E       		.uleb128 0xe
+ 1428 00e1 3A       		.uleb128 0x3a
+ 1429 00e2 0B       		.uleb128 0xb
+ 1430 00e3 3B       		.uleb128 0x3b
+ 1431 00e4 0B       		.uleb128 0xb
+ 1432 00e5 49       		.uleb128 0x49
+ 1433 00e6 13       		.uleb128 0x13
+ 1434 00e7 02       		.uleb128 0x2
+ 1435 00e8 18       		.uleb128 0x18
+ 1436 00e9 00       		.byte	0
+ 1437 00ea 00       		.byte	0
+ 1438 00eb 13       		.uleb128 0x13
+ 1439 00ec 34       		.uleb128 0x34
+ 1440 00ed 00       		.byte	0
+ 1441 00ee 03       		.uleb128 0x3
+ 1442 00ef 0E       		.uleb128 0xe
+ 1443 00f0 3A       		.uleb128 0x3a
+ 1444 00f1 0B       		.uleb128 0xb
+ 1445 00f2 3B       		.uleb128 0x3b
+ 1446 00f3 0B       		.uleb128 0xb
+ 1447 00f4 49       		.uleb128 0x49
+ 1448 00f5 13       		.uleb128 0x13
+ 1449 00f6 02       		.uleb128 0x2
+ 1450 00f7 18       		.uleb128 0x18
+ 1451 00f8 00       		.byte	0
+ 1452 00f9 00       		.byte	0
+ 1453 00fa 14       		.uleb128 0x14
+ 1454 00fb 2E       		.uleb128 0x2e
+ 1455 00fc 01       		.byte	0x1
+ 1456 00fd 3F       		.uleb128 0x3f
+ 1457 00fe 19       		.uleb128 0x19
+ 1458 00ff 03       		.uleb128 0x3
+ 1459 0100 0E       		.uleb128 0xe
+ 1460 0101 3A       		.uleb128 0x3a
+ 1461 0102 0B       		.uleb128 0xb
+ 1462 0103 3B       		.uleb128 0x3b
+ 1463 0104 05       		.uleb128 0x5
+ 1464 0105 27       		.uleb128 0x27
+ 1465 0106 19       		.uleb128 0x19
+ 1466 0107 11       		.uleb128 0x11
+ 1467 0108 01       		.uleb128 0x1
+ 1468 0109 12       		.uleb128 0x12
+ 1469 010a 06       		.uleb128 0x6
+ 1470 010b 40       		.uleb128 0x40
+ 1471 010c 18       		.uleb128 0x18
+ 1472 010d 9642     		.uleb128 0x2116
+ 1473 010f 19       		.uleb128 0x19
+ 1474 0110 01       		.uleb128 0x1
+ 1475 0111 13       		.uleb128 0x13
+ 1476 0112 00       		.byte	0
+ 1477 0113 00       		.byte	0
+ 1478 0114 15       		.uleb128 0x15
+ 1479 0115 34       		.uleb128 0x34
+ 1480 0116 00       		.byte	0
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 33
+
+
+ 1481 0117 03       		.uleb128 0x3
+ 1482 0118 0E       		.uleb128 0xe
+ 1483 0119 3A       		.uleb128 0x3a
+ 1484 011a 0B       		.uleb128 0xb
+ 1485 011b 3B       		.uleb128 0x3b
+ 1486 011c 05       		.uleb128 0x5
+ 1487 011d 49       		.uleb128 0x49
+ 1488 011e 13       		.uleb128 0x13
+ 1489 011f 02       		.uleb128 0x2
+ 1490 0120 18       		.uleb128 0x18
+ 1491 0121 00       		.byte	0
+ 1492 0122 00       		.byte	0
+ 1493 0123 16       		.uleb128 0x16
+ 1494 0124 34       		.uleb128 0x34
+ 1495 0125 00       		.byte	0
+ 1496 0126 03       		.uleb128 0x3
+ 1497 0127 0E       		.uleb128 0xe
+ 1498 0128 3A       		.uleb128 0x3a
+ 1499 0129 0B       		.uleb128 0xb
+ 1500 012a 3B       		.uleb128 0x3b
+ 1501 012b 0B       		.uleb128 0xb
+ 1502 012c 49       		.uleb128 0x49
+ 1503 012d 13       		.uleb128 0x13
+ 1504 012e 3F       		.uleb128 0x3f
+ 1505 012f 19       		.uleb128 0x19
+ 1506 0130 3C       		.uleb128 0x3c
+ 1507 0131 19       		.uleb128 0x19
+ 1508 0132 00       		.byte	0
+ 1509 0133 00       		.byte	0
+ 1510 0134 17       		.uleb128 0x17
+ 1511 0135 26       		.uleb128 0x26
+ 1512 0136 00       		.byte	0
+ 1513 0137 49       		.uleb128 0x49
+ 1514 0138 13       		.uleb128 0x13
+ 1515 0139 00       		.byte	0
+ 1516 013a 00       		.byte	0
+ 1517 013b 18       		.uleb128 0x18
+ 1518 013c 34       		.uleb128 0x34
+ 1519 013d 00       		.byte	0
+ 1520 013e 03       		.uleb128 0x3
+ 1521 013f 0E       		.uleb128 0xe
+ 1522 0140 3A       		.uleb128 0x3a
+ 1523 0141 0B       		.uleb128 0xb
+ 1524 0142 3B       		.uleb128 0x3b
+ 1525 0143 05       		.uleb128 0x5
+ 1526 0144 49       		.uleb128 0x49
+ 1527 0145 13       		.uleb128 0x13
+ 1528 0146 3F       		.uleb128 0x3f
+ 1529 0147 19       		.uleb128 0x19
+ 1530 0148 3C       		.uleb128 0x3c
+ 1531 0149 19       		.uleb128 0x19
+ 1532 014a 00       		.byte	0
+ 1533 014b 00       		.byte	0
+ 1534 014c 19       		.uleb128 0x19
+ 1535 014d 34       		.uleb128 0x34
+ 1536 014e 00       		.byte	0
+ 1537 014f 03       		.uleb128 0x3
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 34
+
+
+ 1538 0150 0E       		.uleb128 0xe
+ 1539 0151 3A       		.uleb128 0x3a
+ 1540 0152 0B       		.uleb128 0xb
+ 1541 0153 3B       		.uleb128 0x3b
+ 1542 0154 0B       		.uleb128 0xb
+ 1543 0155 49       		.uleb128 0x49
+ 1544 0156 13       		.uleb128 0x13
+ 1545 0157 3F       		.uleb128 0x3f
+ 1546 0158 19       		.uleb128 0x19
+ 1547 0159 02       		.uleb128 0x2
+ 1548 015a 18       		.uleb128 0x18
+ 1549 015b 00       		.byte	0
+ 1550 015c 00       		.byte	0
+ 1551 015d 00       		.byte	0
+ 1552              		.section	.debug_aranges,"",%progbits
+ 1553 0000 34000000 		.4byte	0x34
+ 1554 0004 0200     		.2byte	0x2
+ 1555 0006 00000000 		.4byte	.Ldebug_info0
+ 1556 000a 04       		.byte	0x4
+ 1557 000b 00       		.byte	0
+ 1558 000c 0000     		.2byte	0
+ 1559 000e 0000     		.2byte	0
+ 1560 0010 00000000 		.4byte	.LFB37
+ 1561 0014 14010000 		.4byte	.LFE37-.LFB37
+ 1562 0018 00000000 		.4byte	.LFB38
+ 1563 001c 50000000 		.4byte	.LFE38-.LFB38
+ 1564 0020 00000000 		.4byte	.LFB39
+ 1565 0024 C8000000 		.4byte	.LFE39-.LFB39
+ 1566 0028 00000000 		.4byte	.LFB40
+ 1567 002c 60000000 		.4byte	.LFE40-.LFB40
+ 1568 0030 00000000 		.4byte	0
+ 1569 0034 00000000 		.4byte	0
+ 1570              		.section	.debug_ranges,"",%progbits
+ 1571              	.Ldebug_ranges0:
+ 1572 0000 00000000 		.4byte	.LFB37
+ 1573 0004 14010000 		.4byte	.LFE37
+ 1574 0008 00000000 		.4byte	.LFB38
+ 1575 000c 50000000 		.4byte	.LFE38
+ 1576 0010 00000000 		.4byte	.LFB39
+ 1577 0014 C8000000 		.4byte	.LFE39
+ 1578 0018 00000000 		.4byte	.LFB40
+ 1579 001c 60000000 		.4byte	.LFE40
+ 1580 0020 00000000 		.4byte	0
+ 1581 0024 00000000 		.4byte	0
+ 1582              		.section	.debug_line,"",%progbits
+ 1583              	.Ldebug_line0:
+ 1584 0000 4F010000 		.section	.debug_str,"MS",%progbits,1
+ 1584      0200B900 
+ 1584      00000201 
+ 1584      FB0E0D00 
+ 1584      01010101 
+ 1585              	.LASF76:
+ 1586 0000 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_RX_CREDIT_IND\000"
+ 1586      455F4556 
+ 1586      545F4C32 
+ 1586      4341505F 
+ 1586      43424643 
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 35
+
+
+ 1587              	.LASF21:
+ 1588 0023 4359424C 		.ascii	"CYBLE_EVT_STACK_BUSY_STATUS\000"
+ 1588      455F4556 
+ 1588      545F5354 
+ 1588      41434B5F 
+ 1588      42555359 
+ 1589              	.LASF101:
+ 1590 003f 4359424C 		.ascii	"CYBLE_STATE_STOPPED\000"
+ 1590      455F5354 
+ 1590      4154455F 
+ 1590      53544F50 
+ 1590      50454400 
+ 1591              	.LASF75:
+ 1592 0053 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_DATA_READ\000"
+ 1592      455F4556 
+ 1592      545F4C32 
+ 1592      4341505F 
+ 1592      43424643 
+ 1593              	.LASF85:
+ 1594 0072 4359424C 		.ascii	"CYBLE_CONN_HANDLE_T\000"
+ 1594      455F434F 
+ 1594      4E4E5F48 
+ 1594      414E444C 
+ 1594      455F5400 
+ 1595              	.LASF92:
+ 1596 0086 636F6E6E 		.ascii	"connHandle\000"
+ 1596      48616E64 
+ 1596      6C6500
+ 1597              	.LASF33:
+ 1598 0091 4359424C 		.ascii	"CYBLE_EVT_GAP_CONNECTION_UPDATE_COMPLETE\000"
+ 1598      455F4556 
+ 1598      545F4741 
+ 1598      505F434F 
+ 1598      4E4E4543 
+ 1599              	.LASF74:
+ 1600 00ba 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_DISCONN_CNF\000"
+ 1600      455F4556 
+ 1600      545F4C32 
+ 1600      4341505F 
+ 1600      43424643 
+ 1601              	.LASF38:
+ 1602 00db 4359424C 		.ascii	"CYBLE_EVT_GAP_OOB_GENERATED_NOTIFICATION\000"
+ 1602      455F4556 
+ 1602      545F4741 
+ 1602      505F4F4F 
+ 1602      425F4745 
+ 1603              	.LASF54:
+ 1604 0104 4359424C 		.ascii	"CYBLE_EVT_GATTC_READ_MULTI_RSP\000"
+ 1604      455F4556 
+ 1604      545F4741 
+ 1604      5454435F 
+ 1604      52454144 
+ 1605              	.LASF59:
+ 1606 0123 4359424C 		.ascii	"CYBLE_EVT_GATTS_EXEC_WRITE_REQ\000"
+ 1606      455F4556 
+ 1606      545F4741 
+ 1606      5454535F 
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 36
+
+
+ 1606      45584543 
+ 1607              	.LASF117:
+ 1608 0142 64656275 		.ascii	"debug_blue\000"
+ 1608      675F626C 
+ 1608      756500
+ 1609              	.LASF98:
+ 1610 014d 63757374 		.ascii	"customServHandle\000"
+ 1610      6F6D5365 
+ 1610      72764861 
+ 1610      6E646C65 
+ 1610      00
+ 1611              	.LASF18:
+ 1612 015e 4359424C 		.ascii	"CYBLE_EVT_TIMEOUT\000"
+ 1612      455F4556 
+ 1612      545F5449 
+ 1612      4D454F55 
+ 1612      5400
+ 1613              	.LASF4:
+ 1614 0170 6C6F6E67 		.ascii	"long int\000"
+ 1614      20696E74 
+ 1614      00
+ 1615              	.LASF7:
+ 1616 0179 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1616      206C6F6E 
+ 1616      6720756E 
+ 1616      7369676E 
+ 1616      65642069 
+ 1617              	.LASF87:
+ 1618 0190 4359424C 		.ascii	"CYBLE_GATT_VALUE_T\000"
+ 1618      455F4741 
+ 1618      54545F56 
+ 1618      414C5545 
+ 1618      5F5400
+ 1619              	.LASF20:
+ 1620 01a3 4359424C 		.ascii	"CYBLE_EVT_HCI_STATUS\000"
+ 1620      455F4556 
+ 1620      545F4843 
+ 1620      495F5354 
+ 1620      41545553 
+ 1621              	.LASF79:
+ 1622 01b8 4359424C 		.ascii	"CYBLE_EVT_PENDING_FLASH_WRITE\000"
+ 1622      455F4556 
+ 1622      545F5045 
+ 1622      4E44494E 
+ 1622      475F464C 
+ 1623              	.LASF68:
+ 1624 01d6 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CONN_PARAM_UPDATE_REQ\000"
+ 1624      455F4556 
+ 1624      545F4C32 
+ 1624      4341505F 
+ 1624      434F4E4E 
+ 1625              	.LASF122:
+ 1626 01fc 6379426C 		.ascii	"cyBle_customs\000"
+ 1626      655F6375 
+ 1626      73746F6D 
+ 1626      7300
+ 1627              	.LASF36:
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 37
+
+
+ 1628 020a 4359424C 		.ascii	"CYBLE_EVT_GAP_NUMERIC_COMPARISON_REQUEST\000"
+ 1628      455F4556 
+ 1628      545F4741 
+ 1628      505F4E55 
+ 1628      4D455249 
+ 1629              	.LASF113:
+ 1630 0233 43617053 		.ascii	"CapSensenotificationHandle\000"
+ 1630      656E7365 
+ 1630      6E6F7469 
+ 1630      66696361 
+ 1630      74696F6E 
+ 1631              	.LASF104:
+ 1632 024e 4359424C 		.ascii	"CYBLE_STATE_ADVERTISING\000"
+ 1632      455F5354 
+ 1632      4154455F 
+ 1632      41445645 
+ 1632      52544953 
+ 1633              	.LASF6:
+ 1634 0266 6C6F6E67 		.ascii	"long long int\000"
+ 1634      206C6F6E 
+ 1634      6720696E 
+ 1634      7400
+ 1635              	.LASF0:
+ 1636 0274 7369676E 		.ascii	"signed char\000"
+ 1636      65642063 
+ 1636      68617200 
+ 1637              	.LASF17:
+ 1638 0280 4359424C 		.ascii	"CYBLE_EVT_STACK_ON\000"
+ 1638      455F4556 
+ 1638      545F5354 
+ 1638      41434B5F 
+ 1638      4F4E00
+ 1639              	.LASF22:
+ 1640 0293 4359424C 		.ascii	"CYBLE_EVT_MEMORY_REQUEST\000"
+ 1640      455F4556 
+ 1640      545F4D45 
+ 1640      4D4F5259 
+ 1640      5F524551 
+ 1641              	.LASF34:
+ 1642 02ac 4359424C 		.ascii	"CYBLE_EVT_GAPC_SCAN_START_STOP\000"
+ 1642      455F4556 
+ 1642      545F4741 
+ 1642      50435F53 
+ 1642      43414E5F 
+ 1643              	.LASF86:
+ 1644 02cb 61637475 		.ascii	"actualLen\000"
+ 1644      616C4C65 
+ 1644      6E00
+ 1645              	.LASF24:
+ 1646 02d5 4359424C 		.ascii	"CYBLE_EVT_GAP_AUTH_REQ\000"
+ 1646      455F4556 
+ 1646      545F4741 
+ 1646      505F4155 
+ 1646      54485F52 
+ 1647              	.LASF52:
+ 1648 02ec 4359424C 		.ascii	"CYBLE_EVT_GATTC_READ_RSP\000"
+ 1648      455F4556 
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 38
+
+
+ 1648      545F4741 
+ 1648      5454435F 
+ 1648      52454144 
+ 1649              	.LASF57:
+ 1650 0305 4359424C 		.ascii	"CYBLE_EVT_GATTS_WRITE_CMD_REQ\000"
+ 1650      455F4556 
+ 1650      545F4741 
+ 1650      5454535F 
+ 1650      57524954 
+ 1651              	.LASF105:
+ 1652 0323 4359424C 		.ascii	"CYBLE_STATE_DISCONNECTED\000"
+ 1652      455F5354 
+ 1652      4154455F 
+ 1652      44495343 
+ 1652      4F4E4E45 
+ 1653              	.LASF29:
+ 1654 033c 4359424C 		.ascii	"CYBLE_EVT_GAPP_ADVERTISEMENT_START_STOP\000"
+ 1654      455F4556 
+ 1654      545F4741 
+ 1654      50505F41 
+ 1654      44564552 
+ 1655              	.LASF9:
+ 1656 0364 75696E74 		.ascii	"uint8\000"
+ 1656      3800
+ 1657              	.LASF97:
+ 1658 036a 4359424C 		.ascii	"CYBLE_CUSTOMS_INFO_T\000"
+ 1658      455F4355 
+ 1658      53544F4D 
+ 1658      535F494E 
+ 1658      464F5F54 
+ 1659              	.LASF60:
+ 1660 037f 4359424C 		.ascii	"CYBLE_EVT_GATTC_EXEC_WRITE_RSP\000"
+ 1660      455F4556 
+ 1660      545F4741 
+ 1660      5454435F 
+ 1660      45584543 
+ 1661              	.LASF13:
+ 1662 039e 646F7562 		.ascii	"double\000"
+ 1662      6C6500
+ 1663              	.LASF73:
+ 1664 03a5 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_DISCONN_IND\000"
+ 1664      455F4556 
+ 1664      545F4C32 
+ 1664      4341505F 
+ 1664      43424643 
+ 1665              	.LASF110:
+ 1666 03c6 53656E64 		.ascii	"SendCapSenseNotification\000"
+ 1666      43617053 
+ 1666      656E7365 
+ 1666      4E6F7469 
+ 1666      66696361 
+ 1667              	.LASF99:
+ 1668 03df 63757374 		.ascii	"customServInfo\000"
+ 1668      6F6D5365 
+ 1668      7276496E 
+ 1668      666F00
+ 1669              	.LASF11:
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 39
+
+
+ 1670 03ee 75696E74 		.ascii	"uint32\000"
+ 1670      333200
+ 1671              	.LASF119:
+ 1672 03f5 55706461 		.ascii	"UpdateNotificationCCCD\000"
+ 1672      74654E6F 
+ 1672      74696669 
+ 1672      63617469 
+ 1672      6F6E4343 
+ 1673              	.LASF112:
+ 1674 040c 77725265 		.ascii	"wrReqParam\000"
+ 1674      71506172 
+ 1674      616D00
+ 1675              	.LASF78:
+ 1676 0417 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_DATA_WRITE_IND\000"
+ 1676      455F4556 
+ 1676      545F4C32 
+ 1676      4341505F 
+ 1676      43424643 
+ 1677              	.LASF89:
+ 1678 043b 61747472 		.ascii	"attrHandle\000"
+ 1678      48616E64 
+ 1678      6C6500
+ 1679              	.LASF88:
+ 1680 0446 76616C75 		.ascii	"value\000"
+ 1680      6500
+ 1681              	.LASF65:
+ 1682 044c 4359424C 		.ascii	"CYBLE_EVT_GATTC_STOP_CMD_COMPLETE\000"
+ 1682      455F4556 
+ 1682      545F4741 
+ 1682      5454435F 
+ 1682      53544F50 
+ 1683              	.LASF8:
+ 1684 046e 756E7369 		.ascii	"unsigned int\000"
+ 1684      676E6564 
+ 1684      20696E74 
+ 1684      00
+ 1685              	.LASF80:
+ 1686 047b 4359424C 		.ascii	"CYBLE_EVT_LE_PING_AUTH_TIMEOUT\000"
+ 1686      455F4556 
+ 1686      545F4C45 
+ 1686      5F50494E 
+ 1686      475F4155 
+ 1687              	.LASF5:
+ 1688 049a 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1688      20756E73 
+ 1688      69676E65 
+ 1688      6420696E 
+ 1688      7400
+ 1689              	.LASF55:
+ 1690 04ac 4359424C 		.ascii	"CYBLE_EVT_GATTS_WRITE_REQ\000"
+ 1690      455F4556 
+ 1690      545F4741 
+ 1690      5454535F 
+ 1690      57524954 
+ 1691              	.LASF47:
+ 1692 04c6 4359424C 		.ascii	"CYBLE_EVT_GATTC_XCHNG_MTU_RSP\000"
+ 1692      455F4556 
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 40
+
+
+ 1692      545F4741 
+ 1692      5454435F 
+ 1692      5843484E 
+ 1693              	.LASF64:
+ 1694 04e4 4359424C 		.ascii	"CYBLE_EVT_GATTS_DATA_SIGNED_CMD_REQ\000"
+ 1694      455F4556 
+ 1694      545F4741 
+ 1694      5454535F 
+ 1694      44415441 
+ 1695              	.LASF121:
+ 1696 0508 43617053 		.ascii	"CapSenseNotificationCCCDhandle\000"
+ 1696      656E7365 
+ 1696      4E6F7469 
+ 1696      66696361 
+ 1696      74696F6E 
+ 1697              	.LASF67:
+ 1698 0527 4359424C 		.ascii	"CYBLE_EVT_GATTC_LONG_PROCEDURE_END\000"
+ 1698      455F4556 
+ 1698      545F4741 
+ 1698      5454435F 
+ 1698      4C4F4E47 
+ 1699              	.LASF107:
+ 1700 054a 6576656E 		.ascii	"event\000"
+ 1700      7400
+ 1701              	.LASF3:
+ 1702 0550 73686F72 		.ascii	"short unsigned int\000"
+ 1702      7420756E 
+ 1702      7369676E 
+ 1702      65642069 
+ 1702      6E7400
+ 1703              	.LASF16:
+ 1704 0563 4359424C 		.ascii	"CYBLE_EVT_HOST_INVALID\000"
+ 1704      455F4556 
+ 1704      545F484F 
+ 1704      53545F49 
+ 1704      4E56414C 
+ 1705              	.LASF50:
+ 1706 057a 4359424C 		.ascii	"CYBLE_EVT_GATTC_FIND_INFO_RSP\000"
+ 1706      455F4556 
+ 1706      545F4741 
+ 1706      5454435F 
+ 1706      46494E44 
+ 1707              	.LASF118:
+ 1708 0598 696E7465 		.ascii	"intensity_divide_value\000"
+ 1708      6E736974 
+ 1708      795F6469 
+ 1708      76696465 
+ 1708      5F76616C 
+ 1709              	.LASF128:
+ 1710 05af 5247426C 		.ascii	"RGBledData\000"
+ 1710      65644461 
+ 1710      746100
+ 1711              	.LASF25:
+ 1712 05ba 4359424C 		.ascii	"CYBLE_EVT_GAP_PASSKEY_ENTRY_REQUEST\000"
+ 1712      455F4556 
+ 1712      545F4741 
+ 1712      505F5041 
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 41
+
+
+ 1712      53534B45 
+ 1713              	.LASF30:
+ 1714 05de 4359424C 		.ascii	"CYBLE_EVT_GAP_DEVICE_CONNECTED\000"
+ 1714      455F4556 
+ 1714      545F4741 
+ 1714      505F4445 
+ 1714      56494345 
+ 1715              	.LASF132:
+ 1716 05fd 433A5C55 		.ascii	"C:\\Users\\Ecapable\\Desktop\\BLE Lab 4\\BLE Lab 4."
+ 1716      73657273 
+ 1716      5C456361 
+ 1716      7061626C 
+ 1716      655C4465 
+ 1717 062b 63796473 		.ascii	"cydsn\000"
+ 1717      6E00
+ 1718              	.LASF123:
+ 1719 0631 6379426C 		.ascii	"cyBle_state\000"
+ 1719      655F7374 
+ 1719      61746500 
+ 1720              	.LASF26:
+ 1721 063d 4359424C 		.ascii	"CYBLE_EVT_GAP_PASSKEY_DISPLAY_REQUEST\000"
+ 1721      455F4556 
+ 1721      545F4741 
+ 1721      505F5041 
+ 1721      53534B45 
+ 1722              	.LASF44:
+ 1723 0663 4359424C 		.ascii	"CYBLE_EVT_GATT_CONNECT_IND\000"
+ 1723      455F4556 
+ 1723      545F4741 
+ 1723      54545F43 
+ 1723      4F4E4E45 
+ 1724              	.LASF84:
+ 1725 067e 61747449 		.ascii	"attId\000"
+ 1725      6400
+ 1726              	.LASF70:
+ 1727 0684 4359424C 		.ascii	"CYBLE_EVT_L2CAP_COMMAND_REJ\000"
+ 1727      455F4556 
+ 1727      545F4C32 
+ 1727      4341505F 
+ 1727      434F4D4D 
+ 1728              	.LASF23:
+ 1729 06a0 4359424C 		.ascii	"CYBLE_EVT_GAPC_SCAN_PROGRESS_RESULT\000"
+ 1729      455F4556 
+ 1729      545F4741 
+ 1729      50435F53 
+ 1729      43414E5F 
+ 1730              	.LASF93:
+ 1731 06c4 68616E64 		.ascii	"handleValPair\000"
+ 1731      6C655661 
+ 1731      6C506169 
+ 1731      7200
+ 1732              	.LASF71:
+ 1733 06d2 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_CONN_IND\000"
+ 1733      455F4556 
+ 1733      545F4C32 
+ 1733      4341505F 
+ 1733      43424643 
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 42
+
+
+ 1734              	.LASF49:
+ 1735 06f0 4359424C 		.ascii	"CYBLE_EVT_GATTC_READ_BY_TYPE_RSP\000"
+ 1735      455F4556 
+ 1735      545F4741 
+ 1735      5454435F 
+ 1735      52454144 
+ 1736              	.LASF15:
+ 1737 0711 73697A65 		.ascii	"sizetype\000"
+ 1737      74797065 
+ 1737      00
+ 1738              	.LASF94:
+ 1739 071a 4359424C 		.ascii	"CYBLE_GATTS_WRITE_REQ_PARAM_T\000"
+ 1739      455F4741 
+ 1739      5454535F 
+ 1739      57524954 
+ 1739      455F5245 
+ 1740              	.LASF91:
+ 1741 0738 4359424C 		.ascii	"CYBLE_GATTS_HANDLE_VALUE_NTF_T\000"
+ 1741      455F4741 
+ 1741      5454535F 
+ 1741      48414E44 
+ 1741      4C455F56 
+ 1742              	.LASF102:
+ 1743 0757 4359424C 		.ascii	"CYBLE_STATE_INITIALIZING\000"
+ 1743      455F5354 
+ 1743      4154455F 
+ 1743      494E4954 
+ 1743      49414C49 
+ 1744              	.LASF81:
+ 1745 0770 4359424C 		.ascii	"CYBLE_EVT_MAX\000"
+ 1745      455F4556 
+ 1745      545F4D41 
+ 1745      5800
+ 1746              	.LASF28:
+ 1747 077e 4359424C 		.ascii	"CYBLE_EVT_GAP_AUTH_FAILED\000"
+ 1747      455F4556 
+ 1747      545F4741 
+ 1747      505F4155 
+ 1747      54485F46 
+ 1748              	.LASF124:
+ 1749 0798 6379426C 		.ascii	"cyBle_connHandle\000"
+ 1749      655F636F 
+ 1749      6E6E4861 
+ 1749      6E646C65 
+ 1749      00
+ 1750              	.LASF56:
+ 1751 07a9 4359424C 		.ascii	"CYBLE_EVT_GATTC_WRITE_RSP\000"
+ 1751      455F4556 
+ 1751      545F4741 
+ 1751      5454435F 
+ 1751      57524954 
+ 1752              	.LASF41:
+ 1753 07c3 4359424C 		.ascii	"CYBLE_EVT_GAPC_DIRECT_ADV_REPORT\000"
+ 1753      455F4556 
+ 1753      545F4741 
+ 1753      50435F44 
+ 1753      49524543 
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 43
+
+
+ 1754              	.LASF39:
+ 1755 07e4 4359424C 		.ascii	"CYBLE_EVT_GAP_DATA_LENGTH_CHANGE\000"
+ 1755      455F4556 
+ 1755      545F4741 
+ 1755      505F4441 
+ 1755      54415F4C 
+ 1756              	.LASF109:
+ 1757 0805 43757374 		.ascii	"CustomEventHandler\000"
+ 1757      6F6D4576 
+ 1757      656E7448 
+ 1757      616E646C 
+ 1757      657200
+ 1758              	.LASF125:
+ 1759 0818 64657669 		.ascii	"deviceConnected\000"
+ 1759      6365436F 
+ 1759      6E6E6563 
+ 1759      74656400 
+ 1760              	.LASF27:
+ 1761 0828 4359424C 		.ascii	"CYBLE_EVT_GAP_AUTH_COMPLETE\000"
+ 1761      455F4556 
+ 1761      545F4741 
+ 1761      505F4155 
+ 1761      54485F43 
+ 1762              	.LASF127:
+ 1763 0844 72676248 		.ascii	"rgbHandle\000"
+ 1763      616E646C 
+ 1763      6500
+ 1764              	.LASF61:
+ 1765 084e 4359424C 		.ascii	"CYBLE_EVT_GATTC_HANDLE_VALUE_NTF\000"
+ 1765      455F4556 
+ 1765      545F4741 
+ 1765      5454435F 
+ 1765      48414E44 
+ 1766              	.LASF90:
+ 1767 086f 4359424C 		.ascii	"CYBLE_GATT_HANDLE_VALUE_PAIR_T\000"
+ 1767      455F4741 
+ 1767      54545F48 
+ 1767      414E444C 
+ 1767      455F5641 
+ 1768              	.LASF72:
+ 1769 088e 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_CONN_CNF\000"
+ 1769      455F4556 
+ 1769      545F4C32 
+ 1769      4341505F 
+ 1769      43424643 
+ 1770              	.LASF48:
+ 1771 08ac 4359424C 		.ascii	"CYBLE_EVT_GATTC_READ_BY_GROUP_TYPE_RSP\000"
+ 1771      455F4556 
+ 1771      545F4741 
+ 1771      5454435F 
+ 1771      52454144 
+ 1772              	.LASF12:
+ 1773 08d3 666C6F61 		.ascii	"float\000"
+ 1773      7400
+ 1774              	.LASF1:
+ 1775 08d9 756E7369 		.ascii	"unsigned char\000"
+ 1775      676E6564 
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 44
+
+
+ 1775      20636861 
+ 1775      7200
+ 1776              	.LASF10:
+ 1777 08e7 75696E74 		.ascii	"uint16\000"
+ 1777      313600
+ 1778              	.LASF37:
+ 1779 08ee 4359424C 		.ascii	"CYBLE_EVT_GAP_KEYPRESS_NOTIFICATION\000"
+ 1779      455F4556 
+ 1779      545F4741 
+ 1779      505F4B45 
+ 1779      59505245 
+ 1780              	.LASF111:
+ 1781 0912 43617053 		.ascii	"CapSenseSliderData\000"
+ 1781      656E7365 
+ 1781      536C6964 
+ 1781      65724461 
+ 1781      746100
+ 1782              	.LASF2:
+ 1783 0925 73686F72 		.ascii	"short int\000"
+ 1783      7420696E 
+ 1783      7400
+ 1784              	.LASF62:
+ 1785 092f 4359424C 		.ascii	"CYBLE_EVT_GATTC_HANDLE_VALUE_IND\000"
+ 1785      455F4556 
+ 1785      545F4741 
+ 1785      5454435F 
+ 1785      48414E44 
+ 1786              	.LASF103:
+ 1787 0950 4359424C 		.ascii	"CYBLE_STATE_CONNECTED\000"
+ 1787      455F5354 
+ 1787      4154455F 
+ 1787      434F4E4E 
+ 1787      45435445 
+ 1788              	.LASF120:
+ 1789 0966 43617053 		.ascii	"CapSenseCCCDvalue\000"
+ 1789      656E7365 
+ 1789      43434344 
+ 1789      76616C75 
+ 1789      6500
+ 1790              	.LASF58:
+ 1791 0978 4359424C 		.ascii	"CYBLE_EVT_GATTS_PREP_WRITE_REQ\000"
+ 1791      455F4556 
+ 1791      545F4741 
+ 1791      5454535F 
+ 1791      50524550 
+ 1792              	.LASF32:
+ 1793 0997 4359424C 		.ascii	"CYBLE_EVT_GAP_ENCRYPT_CHANGE\000"
+ 1793      455F4556 
+ 1793      545F4741 
+ 1793      505F454E 
+ 1793      43525950 
+ 1794              	.LASF63:
+ 1795 09b4 4359424C 		.ascii	"CYBLE_EVT_GATTS_HANDLE_VALUE_CNF\000"
+ 1795      455F4556 
+ 1795      545F4741 
+ 1795      5454535F 
+ 1795      48414E44 
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 45
+
+
+ 1796              	.LASF43:
+ 1797 09d5 4359424C 		.ascii	"CYBLE_EVT_GATTC_ERROR_RSP\000"
+ 1797      455F4556 
+ 1797      545F4741 
+ 1797      5454435F 
+ 1797      4552524F 
+ 1798              	.LASF42:
+ 1799 09ef 4359424C 		.ascii	"CYBLE_EVT_GAP_SMP_NEGOTIATED_AUTH_INFO\000"
+ 1799      455F4556 
+ 1799      545F4741 
+ 1799      505F534D 
+ 1799      505F4E45 
+ 1800              	.LASF115:
+ 1801 0a16 64656275 		.ascii	"debug_red\000"
+ 1801      675F7265 
+ 1801      6400
+ 1802              	.LASF14:
+ 1803 0a20 63686172 		.ascii	"char\000"
+ 1803      00
+ 1804              	.LASF31:
+ 1805 0a25 4359424C 		.ascii	"CYBLE_EVT_GAP_DEVICE_DISCONNECTED\000"
+ 1805      455F4556 
+ 1805      545F4741 
+ 1805      505F4445 
+ 1805      56494345 
+ 1806              	.LASF66:
+ 1807 0a47 4359424C 		.ascii	"CYBLE_EVT_GATTS_READ_CHAR_VAL_ACCESS_REQ\000"
+ 1807      455F4556 
+ 1807      545F4741 
+ 1807      5454535F 
+ 1807      52454144 
+ 1808              	.LASF126:
+ 1809 0a70 73656E64 		.ascii	"sendCapSenseSliderNotifications\000"
+ 1809      43617053 
+ 1809      656E7365 
+ 1809      536C6964 
+ 1809      65724E6F 
+ 1810              	.LASF131:
+ 1811 0a90 2E5C424C 		.ascii	".\\BLEApplications.c\000"
+ 1811      45417070 
+ 1811      6C696361 
+ 1811      74696F6E 
+ 1811      732E6300 
+ 1812              	.LASF77:
+ 1813 0aa4 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_TX_CREDIT_IND\000"
+ 1813      455F4556 
+ 1813      545F4C32 
+ 1813      4341505F 
+ 1813      43424643 
+ 1814              	.LASF116:
+ 1815 0ac7 64656275 		.ascii	"debug_green\000"
+ 1815      675F6772 
+ 1815      65656E00 
+ 1816              	.LASF19:
+ 1817 0ad3 4359424C 		.ascii	"CYBLE_EVT_HARDWARE_ERROR\000"
+ 1817      455F4556 
+ 1817      545F4841 
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 46
+
+
+ 1817      52445741 
+ 1817      52455F45 
+ 1818              	.LASF46:
+ 1819 0aec 4359424C 		.ascii	"CYBLE_EVT_GATTS_XCNHG_MTU_REQ\000"
+ 1819      455F4556 
+ 1819      545F4741 
+ 1819      5454535F 
+ 1819      58434E48 
+ 1820              	.LASF108:
+ 1821 0b0a 6576656E 		.ascii	"eventParam\000"
+ 1821      74506172 
+ 1821      616D00
+ 1822              	.LASF114:
+ 1823 0b15 55706461 		.ascii	"UpdateRGBled\000"
+ 1823      74655247 
+ 1823      426C6564 
+ 1823      00
+ 1824              	.LASF106:
+ 1825 0b22 4359424C 		.ascii	"CYBLE_STATE_T\000"
+ 1825      455F5354 
+ 1825      4154455F 
+ 1825      5400
+ 1826              	.LASF53:
+ 1827 0b30 4359424C 		.ascii	"CYBLE_EVT_GATTC_READ_BLOB_RSP\000"
+ 1827      455F4556 
+ 1827      545F4741 
+ 1827      5454435F 
+ 1827      52454144 
+ 1828              	.LASF129:
+ 1829 0b4e 75706461 		.ascii	"updateNotificationCCCAttribute\000"
+ 1829      74654E6F 
+ 1829      74696669 
+ 1829      63617469 
+ 1829      6F6E4343 
+ 1830              	.LASF130:
+ 1831 0b6d 474E5520 		.ascii	"GNU C 4.9.3 20150303 (release) [ARM/embedded-4_9-br"
+ 1831      4320342E 
+ 1831      392E3320 
+ 1831      32303135 
+ 1831      30333033 
+ 1832 0ba0 616E6368 		.ascii	"anch revision 221220] -mcpu=cortex-m0 -mthumb -g -O"
+ 1832      20726576 
+ 1832      6973696F 
+ 1832      6E203232 
+ 1832      31323230 
+ 1833 0bd3 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 1833      66756E63 
+ 1833      74696F6E 
+ 1833      2D736563 
+ 1833      74696F6E 
+ 1834              	.LASF51:
+ 1835 0bfb 4359424C 		.ascii	"CYBLE_EVT_GATTC_FIND_BY_TYPE_VALUE_RSP\000"
+ 1835      455F4556 
+ 1835      545F4741 
+ 1835      5454435F 
+ 1835      46494E44 
+ 1836              	.LASF35:
+ARM GAS  C:\Users\Ecapable\AppData\Local\Temp\ccj40yZB.s 			page 47
+
+
+ 1837 0c22 4359424C 		.ascii	"CYBLE_EVT_GAP_KEYINFO_EXCHNGE_CMPLT\000"
+ 1837      455F4556 
+ 1837      545F4741 
+ 1837      505F4B45 
+ 1837      59494E46 
+ 1838              	.LASF83:
+ 1839 0c46 62644861 		.ascii	"bdHandle\000"
+ 1839      6E646C65 
+ 1839      00
+ 1840              	.LASF100:
+ 1841 0c4f 4359424C 		.ascii	"CYBLE_CUSTOMS_T\000"
+ 1841      455F4355 
+ 1841      53544F4D 
+ 1841      535F5400 
+ 1842              	.LASF69:
+ 1843 0c5f 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CONN_PARAM_UPDATE_RSP\000"
+ 1843      455F4556 
+ 1843      545F4C32 
+ 1843      4341505F 
+ 1843      434F4E4E 
+ 1844              	.LASF40:
+ 1845 0c85 4359424C 		.ascii	"CYBLE_EVT_GAP_ENHANCE_CONN_COMPLETE\000"
+ 1845      455F4556 
+ 1845      545F4741 
+ 1845      505F454E 
+ 1845      48414E43 
+ 1846              	.LASF82:
+ 1847 0ca9 4359424C 		.ascii	"CYBLE_GATT_DB_ATTR_HANDLE_T\000"
+ 1847      455F4741 
+ 1847      54545F44 
+ 1847      425F4154 
+ 1847      54525F48 
+ 1848              	.LASF95:
+ 1849 0cc5 63757374 		.ascii	"customServCharHandle\000"
+ 1849      6F6D5365 
+ 1849      72764368 
+ 1849      61724861 
+ 1849      6E646C65 
+ 1850              	.LASF45:
+ 1851 0cda 4359424C 		.ascii	"CYBLE_EVT_GATT_DISCONNECT_IND\000"
+ 1851      455F4556 
+ 1851      545F4741 
+ 1851      54545F44 
+ 1851      4953434F 
+ 1852              	.LASF96:
+ 1853 0cf8 63757374 		.ascii	"customServCharDesc\000"
+ 1853      6F6D5365 
+ 1853      72764368 
+ 1853      61724465 
+ 1853      736300
+ 1854              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 4.9.3 20150303 (release) [ARM/embedded-4_9-br
